@@ -4,7 +4,7 @@
   "description": "This repository is to get together all services can help GUI",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage && codecov",
+    "test": "jest src/tests/.*.test.js --coverage && codecov", 
     "dev": "nodemon src/index.js",
     "start": "node index.js"
   },
@@ -14,7 +14,8 @@
   },
   "author": [
     "Elias Reis <efreis@cpqd.com.br>",
-    "Mariane P. @mprevide"
+    "Mariane P. @mprevide",
+    "Julia M. @juliamourac"
   ],
   "license": "GPL-3.0",
   "dependencies": {
@@ -33,8 +34,14 @@
   },
   "jest": {
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/graphql/**/*.js",
+      "src/routers/**/*.js",
+      "!src/index.js "
+    ]
   },
+
   "devDependencies": {
     "codecov": "^3.1.0",
     "eslint": "^5.13.0",

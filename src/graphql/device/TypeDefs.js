@@ -18,7 +18,7 @@ type Device {
     label: String!
     valueType: ValueType!
  }
-  
+
 #A paginated list of Devices.#
  type DeviceListPage {
     totalPages: Int!
@@ -32,7 +32,7 @@ type Device {
     #set the number of elements to be shown in a page (default 1) #
     size: Int
  }
-  
+
  #Return only devices that are named accordingly (prefix or suffix match)#
  input FilterDeviceInput {
     label: String
@@ -45,13 +45,13 @@ type Device {
     dateTo: String
     lastN: Int
  }
- 
+
  #Parameters to identify from which device and which attributes to retrieve historical data from#
  input HistoryDeviceInput{
     #device selected#
     deviceID: String!
     #attributes which readings are to be retrieved#
-    attrs: [String]!
+    attrs: [String]
  }
  #Historical reading from an attribute#
  type HistoryAttr {

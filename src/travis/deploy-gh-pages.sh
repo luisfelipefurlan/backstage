@@ -11,7 +11,7 @@ if [ $TRAVIS_PULL_REQUEST == false ] ; then
   git remote add -t gh-pages -f origin-gh-pages https://github.com/${TRAVIS_REPO_SLUG}
   git fetch origin-gh-pages
   git checkout .
-  git checkout origin-gh-pages/gh-pages
+  git checkout gh-pages
   
   git checkout ${TRAVIS_BRANCH} -- ./src
 

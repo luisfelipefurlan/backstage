@@ -22,8 +22,10 @@ if [ $TRAVIS_PULL_REQUEST == false ] ; then
   git rm -r ./src -f
 
   git add ./${VERSION}
-  git commit -m 'Updating gh-pages' --amend
+  git commit -m 'Updating gh-pages' 
   git push --force http://${GITHUB_TOKEN}:x-oauth-basic@github.com/${TRAVIS_REPO_SLUG} gh-pages
+  
+  
   git checkout -- .
   git clean -fd
   git checkout ${TRAVIS_BRANCH}

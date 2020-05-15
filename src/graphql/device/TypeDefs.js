@@ -1,11 +1,11 @@
 const TypeDefs = [`
-"""Necessary informations about device"""
+#Necessary informations about device#
 type Device {
     id: String!
     label: String!
     attrs: [Attr]
  }
- """Value types used by the platform"""
+ #Value types used by the platform#
  enum ValueType {
     NUMBER
     STRING
@@ -13,54 +13,54 @@ type Device {
     GEO
     UNDEFINED
  }
- """Necessary data about and attribute of a device"""
+ #Necessary data about and attribute of a device#
  type Attr {
     label: String!
     valueType: ValueType!
  }
   
-"""A paginated list of Devices."""
+#A paginated list of Devices.#
  type DeviceListPage {
     totalPages: Int!
     currentPage: Int!
     devices: [Device]
  }
-"""Determines which page to show and how many items"""
+#Determines which page to show and how many items#
  input PageInput {
-    """set the page number to be accessed"""  
+    #set the page number to be accessed#  
     number: Int
-    """set the number of elements to be shown in a page"""
+    #set the number of elements to be shown in a page#
     size: Int
  }
   
- """Return only devices that are named accordingly (prefix or suffix match)"""
+ #Return only devices that are named accordingly (prefix or suffix match)#
  input FilterDeviceInput {
     label: String
  }
- """Parameters to query historical device data"""
+ #Parameters to query historical device data#
  input HistoryInput {
-    """list of devices which attributes will be retrieved"""
+    #list of devices which attributes will be retrieved#
     devices: [HistoryDeviceInput]!
     dateFrom: String
     dateTo: String
     lastN: Int
  }
  
- """Parameters to identify from which device and which attributes to retrieve historical data from"""
+ #Parameters to identify from which device and which attributes to retrieve historical data from#
  input HistoryDeviceInput{
-    """device selected"""
+    #device selected#
     deviceID: String!
-    """attributes which readings are to be retrieved"""
+    #attributes which readings are to be retrieved#
     attrs: [String]
  }
- """Historical reading from an attribute"""
+ #Historical reading from an attribute#
  type HistoryAttr {
     label: String!
     valueType: ValueType!
     value: String!
     timestamp: String!
  }
- """Historical reading from device"""
+ #Historical reading from device#
  type History{
     deviceID: String!
     label: String!

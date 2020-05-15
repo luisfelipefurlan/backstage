@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
 if [ $TRAVIS_PULL_REQUEST == false ] ; then
 
   if [ "${TRAVIS_BRANCH}" == "master" ]

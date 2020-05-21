@@ -5,6 +5,8 @@ const templateTypeDefs = require('./template/TypeDefs');
 const templateResolvers = require('./template/Resolvers');
 const deviceTypeDefs = require('./device/TypeDefs');
 const deviceResolvers = require('./device/Resolvers');
+const userResolvers = require('./user/Resolvers');
+const userTypeDefs = require('./user/TypeDefs');
 
 
 const query = [`
@@ -20,13 +22,18 @@ const query = [`
       getDeviceById(deviceId: String!): Device
       #Returns historical data about devices' attributes chosen in the input
       getDeviceHistory(filter: HistoryInput!): [History]
+      #Retrieves dashboard configuration by user
+      getConfig(user:String!, tenant:String!): String
+    }
+  type Mutation {
+      updateConfig(user:String, tenant:String, config: String): String
     }
 `];
 
 // Put schema together into one array of schema strings
 // and one map of resolvers, like makeExecutableSchema expects
-const typeDefs = [...query, ...templateTypeDefs, ...commonTypeDefs, ...deviceTypeDefs];
-const resolvers = merge(templateResolvers, deviceResolvers);
+const typeDefs = [...query, ...templateTypeDefs, ...commonTypeDefs, ...deviceTypeDefs, ...userTypeDefs];
+const resolvers = merge(templateResolvers, deviceResolvers, userResolvers);
 
 const executableSchema = makeExecutableSchema({ typeDefs, resolvers });
 

@@ -28,6 +28,10 @@ const Resolvers = {
     Mutation: {
         async updateConfig(root, params) {
             try {
+                if(params.config === null){
+                    throw 'Dashboard configuration cannot be null'
+                }
+
                 const date = new Date().toLocaleString();
                 let query = {
                     text: "SELECT * FROM user_config WHERE username=$1 AND tenant=$2;",

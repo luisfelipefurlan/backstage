@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest src/tests/.*.test.js --coverage && codecov", 
-    "dev": "nodemon src/index.js",
+    "dev": "node src/databaseCheck.js && nodemon src/index.js",
     "start": "node index.js"
   },
   "repository": {

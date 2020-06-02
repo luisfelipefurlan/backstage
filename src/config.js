@@ -13,6 +13,7 @@ const config = {
   postgres_port: process.env.POSTGRES_PORT || 5432,
   base_local_url_graphql: `${configGraphQL.local_url}:${configGraphQL.local_port}`,
   base_auth_url_graphql: `${configGraphQL.auth_internal_url}:${configGraphQL.auth_internal_port}`,
+  user_config_data_table: process.env.USER_DATATABLE || 'user_config',
 };
 
 module.exports = config;

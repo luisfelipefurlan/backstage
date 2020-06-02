@@ -4,7 +4,7 @@
   "description": "This repository is to get together all services can help GUI",
   "main": "index.js",
   "scripts": {
-    "test": "jest src/tests/graphql/.*.test.js --verbose --coverage --runInBand --expand --collectCoverage --debug --detectOpenHandles && codecov -t 6d08180d-063d-4c23-b0f8-ecd785adecee",
+    "test": "jest src/tests/.*.test.js --verbose --coverage --runInBand --expand --collectCoverage --debug --detectOpenHandles && codecov -t 6d08180d-063d-4c23-b0f8-ecd785adecee",
     "dev": "node src/databaseCheck.js && nodemon src/index.js",
     "start": "node index.js"
   },

@@ -4,7 +4,7 @@
   "description": "This repository is to get together all services can help GUI",
   "main": "index.js",
   "scripts": {
-    "test": "jest src/tests/.*.test.js --verbose --coverage --runInBand --expand --collectCoverage --debug --detectOpenHandles && codecov",
+    "test": "jest src/tests/graphql/.*.test.js --verbose --coverage --runInBand --expand --collectCoverage --debug --detectOpenHandles && codecov -t 6d08180d-063d-4c23-b0f8-ecd785adecee",
     "dev": "node src/databaseCheck.js && nodemon src/index.js",
     "start": "node index.js"
   },
@@ -42,7 +42,7 @@
     ]
   },
   "devDependencies": {
-    "codecov": "^3.1.0",
+    "codecov": "^3.7.0",
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",

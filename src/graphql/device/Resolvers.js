@@ -47,20 +47,22 @@ const Resolvers = {
         device.attrs = [];
         Object.keys(deviceData.attrs).forEach((key) => {
           deviceData.attrs[key].forEach((attr) => {
-            if(attr.type != "dynamic") {return};
+            if (attr.type != "dynamic") { return };
             device.attrs.push({
               label: attr.label,
-              value_type: formatValueType(attr.value_type)
+              valueType: formatValueType(attr.value_type)
             });
           });
         });
         return (device);
       } catch (err) {
         LOG.error(err);
+        throw error;
       }
     },
 
-    async getDevices(root, params) {
+    async getDevices(root, params, context) {
+      setToken(context.token);
       // building the request string
       const requestParameters = {};
       if (params.hasOwnProperty('page') && params.page.size != null) {
@@ -96,10 +98,10 @@ const Resolvers = {
           let keys = Object.keys(device.attrs);
           keys.forEach((key) => {
             device.attrs[key].forEach((attr) => {
-              if (attr.type != "dynamic") {return;}
+              if (attr.type != "dynamic") { return; }
               attributes.push({
                 label: attr.label,
-                value_type: formatValueType(attr.value_type)
+                valueType: formatValueType(attr.value_type)
               });
             });
           });
@@ -119,10 +121,12 @@ const Resolvers = {
         return deviceList;
       } catch (error) {
         LOG.error(error);
+        throw error;
       }
     },
 
-    async getDeviceHistory(root, params) {
+    async getDeviceHistory(root, params, context) {
+      setToken(context.token);
       const history = [];
       const keys = Object.keys(params.filter);
       // removing element "devices" from list so it isn't appended to requestString
@@ -131,12 +135,12 @@ const Resolvers = {
       const requestStringPt1 = '/history/device/';
       let requestStringPt2 = '/history';
 
-      if (keys.length != 0) {
-        requestStringPt2 += '?';
-        keys.forEach((element) => {
-          requestStringPt2 += `${element}=${params.filter[element]}&`;
-        });
-      }
+      // if (keys.length != 0) {
+      //   requestStringPt2 += '?';
+      //   keys.forEach((element) => {
+      //     requestStringPt2 += `${element}=${params.filter[element]}&`;
+      //   });
+      // }
 
       const historyPromiseArray = [];
       const fetchedData = [];
@@ -144,14 +148,30 @@ const Resolvers = {
       const devicesInfo = [];
 
       params.filter.devices.forEach((obj) => {
-        obj.attrs.forEach((attr) => {
-          const requestString = `${requestStringPt1}${obj.deviceID}${requestStringPt2}&attr=${attr}`;
+        // if (obj && obj.attrs) {
+        if (!obj.attrs) {
+          const requestString = `${requestStringPt1}${obj.deviceID}${requestStringPt2}`;
+          console.log('requestString', requestString);
           const promiseHistory = axios(optionsAxios(UTIL.GET, requestString)).catch((err) => {
             LOG.error(`Device id ${obj.id}: ${err}`);
             return Promise.resolve(null);
           });
           historyPromiseArray.push(promiseHistory);
-        });
+
+        } else {
+
+          obj.attrs.forEach((attr) => {
+            const requestString = `${requestStringPt1}${obj.deviceID}${requestStringPt2}?attr=${attr}`;
+            console.log('requestString', requestString);
+            const promiseHistory = axios(optionsAxios(UTIL.GET, requestString)).catch((err) => {
+              LOG.error(`Device id ${obj.id}: ${err}`);
+              return Promise.resolve(null);
+            });
+            historyPromiseArray.push(promiseHistory);
+          });
+        }
+
+
         const promiseDevice = axios(optionsAxios(UTIL.GET, `/device/${obj.deviceID}`));
         devicePromiseArray.push(promiseDevice);
       });
@@ -160,58 +180,70 @@ const Resolvers = {
       await Promise.all(historyPromiseArray).then((values) => {
         Object.keys(values).forEach((keys) => {
           if (values[keys] != null && values[keys] != undefined) {
-            values[keys].data.forEach((entry) => {
-              fetchedData.push(entry);
-            });
+            if (values[keys].data && Array.isArray(values[keys].data)) {
+              values[keys].data.forEach((entry) => {
+                fetchedData.push(entry);
+              });
+            }
           }
         });
       }).catch((error) => {
         LOG.error(`${error}`);
+        throw error;
       });
 
       await Promise.all(devicePromiseArray).then((values) => {
         Object.keys(values).forEach((keys) => {
           if (values[keys] != null && values[keys] != undefined) {
-            devicesInfo.push(values[keys].data);
+            if (values[keys].data && Array.isArray(values[keys].data)) {
+              devicesInfo.push(values[keys].data);
+            }
           }
         });
+
       }).catch((error) => {
         LOG.error(error);
+        throw error;
       });
+      try {
+        devicesInfo.forEach(deviceObj => {
+          if (deviceObj === null || deviceObj === undefined || deviceObj.attrs === undefined) { return; }
+          //listing device attributes so a  reading's value type can be defined
+          let deviceAttributes = {};
+          Object.keys(deviceObj.attrs).forEach(key => {
+            deviceObj.attrs[key].forEach(attr => {
+              deviceAttributes[attr.label] = {
+                label: attr.label,
+                valueType: formatValueType(attr.value_type)
+              }
+            });
+          });
 
-      devicesInfo.forEach(deviceObj => {
-        if (deviceObj === null || deviceObj === undefined || deviceObj.attrs === undefined) { return; }
-        //listing device attributes so a  reading's value type can be defined
-        let deviceAttributes = {};
-        Object.keys(deviceObj.attrs).forEach(key => {
-          deviceObj.attrs[key].forEach(attr => {
-            deviceAttributes[attr.label] = {
-              label: attr.label,
-              valueType: formatValueType(attr.value_type)
+          const readings = [];
+          fetchedData.forEach((data) => {
+            if (deviceObj.id === data.device_id) {
+              readings.push({
+                label: data.attr,
+                valueType: deviceAttributes[data.attr].valueType,
+                value: data.value,
+                timestamp: data.ts,
+              });
             }
           });
-        });
 
-        const readings = [];
-        fetchedData.forEach((data) => {
-          if (deviceObj.id === data.device_id) {
-            readings.push({
-              label: data.attr,
-              valueType: deviceAttributes[data.attr].valueType,
-              value: data.value,
-              timestamp: data.ts,
+          if (readings.length != 0) {
+            history.push({
+              deviceID: deviceObj.id,
+              label: deviceObj.label,
+              attrs: readings,
             });
           }
         });
-
-        if (readings.length != 0) {
-          history.push({
-            deviceID: deviceObj.id,
-            label: deviceObj.label,
-            attrs: readings,
-          });
-        }
-      });
+        //  }
+      } catch (error) {
+        LOG.error(error);
+        throw error;
+      }
 
       return history;
     },

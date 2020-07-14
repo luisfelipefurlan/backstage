@@ -21,7 +21,7 @@ const query = [`
       #Finds device information by id
       getDeviceById(deviceId: String!): Device
       #Returns historical data about devices' attributes chosen in the input
-      getDeviceHistory(filter: HistoryInput!): [HistoryAttr]
+      getDeviceHistory(filter: HistoryInput!): [History]
       #Returns historical data about devices' attributes chosen in the input
       getDeviceHistoryForDashboard(filter: HistoryInput!): String
       #Retrieves dashboard configuration by user. Returns the information if successful or error message if it occurs.

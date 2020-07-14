@@ -60,7 +60,6 @@ type Device {
     valueType: ValueType!
     value: String!
     timestamp: String!
-    deviceID: String!
  }
  #Historical reading from device#
  type History{

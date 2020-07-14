@@ -9,98 +9,100 @@ afterEach(() => {
 
 it('should return a device', () => {
   const root = {};
-  const params = { deviceId: "10cf" };
+  const params = { deviceId: '10cf' };
   const context = {};
 
-  axios.mockImplementationOnce(() => Promise.resolve({data: {
-    "attrs": {
-      "4865": [
-        {
-          "created": "2017-12-20T18:14:43.994796+00:00",
-          "id": 30,
-          "label": "tag_temperature",
-          "template_id": "4865",
-          "type": "dynamic",
-          "value_type": "integer"
-        },
-        {
-          "created": "2017-12-20T18:14:44.014065+00:00",
-          "id": 31,
-          "label": "tag_pressure",
-          "template_id": "4865",
-          "type": "dynamic",
-          "value_type": "float"
-        },
-        {
-          "created": "2017-12-20T18:14:44.015474+00:00",
-          "id": 32,
-          "label": "tag_led",
-          "template_id": "4865",
-          "type": "dynamic",
-          "value_type": "bool"
-        },
-        {
-          "created": "2017-12-20T18:14:44.016804+00:00",
-          "id": 33,
-          "label": "tag_fan",
-          "template_id": "4865",
-          "type": "dynamic",
-          "value_type": "bool"
-        },
-        {
-          "created": "2017-12-20T18:14:44.016804+00:00",
-          "id": 34,
-          "label": "location",
-          "template_id": "4865",
-          "type": "geo:point"
-        },
-        {
-          "created": "2017-12-20T18:14:44.016804+00:00",
-          "id": 34,
-          "label": "customName",
-          "template_id": "4865",
-          "type": "string"
-        },
-        {
-          "created": "2017-12-20T18:14:44.016804+00:00",
-          "id": 34,
-          "label": "someact",
-          "template_id": "4865",
-          "type": "actuator"
-        }
-      ]
+  axios.mockImplementationOnce(() => Promise.resolve({
+    data: {
+      attrs: {
+        4865: [
+          {
+            created: '2017-12-20T18:14:43.994796+00:00',
+            id: 30,
+            label: 'tag_temperature',
+            template_id: '4865',
+            type: 'dynamic',
+            value_type: 'integer',
+          },
+          {
+            created: '2017-12-20T18:14:44.014065+00:00',
+            id: 31,
+            label: 'tag_pressure',
+            template_id: '4865',
+            type: 'dynamic',
+            value_type: 'float',
+          },
+          {
+            created: '2017-12-20T18:14:44.015474+00:00',
+            id: 32,
+            label: 'tag_led',
+            template_id: '4865',
+            type: 'dynamic',
+            value_type: 'bool',
+          },
+          {
+            created: '2017-12-20T18:14:44.016804+00:00',
+            id: 33,
+            label: 'tag_fan',
+            template_id: '4865',
+            type: 'dynamic',
+            value_type: 'bool',
+          },
+          {
+            created: '2017-12-20T18:14:44.016804+00:00',
+            id: 34,
+            label: 'location',
+            template_id: '4865',
+            type: 'geo:point',
+          },
+          {
+            created: '2017-12-20T18:14:44.016804+00:00',
+            id: 34,
+            label: 'customName',
+            template_id: '4865',
+            type: 'string',
+          },
+          {
+            created: '2017-12-20T18:14:44.016804+00:00',
+            id: 34,
+            label: 'someact',
+            template_id: '4865',
+            type: 'actuator',
+          },
+        ],
+      },
+      created: '2017-12-20T18:15:08.864677+00:00',
+      id: '10cf',
+      label: 'sensor-4',
+      templates: [
+        '4865',
+      ],
     },
-    "created": "2017-12-20T18:15:08.864677+00:00",
-    "id": "10cf",
-    "label": "sensor-4",
-    "templates": [
-      "4865"
-    ]
-  }}));
+  }));
 
   return Resolvers.Query.getDeviceById(root, params, context).then((output) => {
     expect(output).toEqual({
-      "attrs": [
+      attrs: [
         {
-          "label": "tag_temperature",
-          "value_type": "NUMBER"
+          label: 'tag_temperature',
+          valueType: 'NUMBER',
         },
         {
-          "label": "tag_pressure",
-          "value_type": "NUMBER"
+          label: 'tag_pressure',
+          valueType: 'NUMBER',
         },
         {
-          "label": "tag_led",
-          "value_type": "BOOLEAN"
+          label: 'tag_led',
+          valueType: 'BOOLEAN',
         },
         {
-          "label": "tag_fan",
-          "value_type": "BOOLEAN"
-        }
+          label: 'tag_fan',
+          valueType: 'BOOLEAN',
+        },
       ],
-      "id": "10cf",
-      "label": "sensor-4"
-    })
+      id: '10cf',
+      label: 'sensor-4',
+    });
   });
 });
 
@@ -110,131 +112,131 @@ it('should get a list of devices', () => {
     data: {
       devices: [
         {
-          "attrs": {
-            "2": [
+          attrs: {
+            2: [
               {
-                "created": "2020-05-14T18:15:47.307374+00:00",
-                "id": 6,
-                "is_static_overridden": false,
-                "label": "dina2",
-                "static_value": "",
-                "template_id": "2",
-                "type": "dynamic",
-                "value_type": "float"
+                created: '2020-05-14T18:15:47.307374+00:00',
+                id: 6,
+                is_static_overridden: false,
+                label: 'dina2',
+                static_value: '',
+                template_id: '2',
+                type: 'dynamic',
+                value_type: 'float',
               },
               {
-                "created": "2020-05-14T18:15:47.306332+00:00",
-                "id": 5,
-                "is_static_overridden": false,
-                "label": "static",
-                "static_value": "true",
-                "template_id": "2",
-                "type": "static",
-                "value_type": "bool"
+                created: '2020-05-14T18:15:47.306332+00:00',
+                id: 5,
+                is_static_overridden: false,
+                label: 'static',
+                static_value: 'true',
+                template_id: '2',
+                type: 'static',
+                value_type: 'bool',
               },
               {
-                "created": "2020-05-14T18:15:47.305416+00:00",
-                "id": 4,
-                "is_static_overridden": false,
-                "label": "dinbool",
-                "static_value": "",
-                "template_id": "2",
-                "type": "dynamic",
-                "value_type": "bool"
-              }
-            ]
+                created: '2020-05-14T18:15:47.305416+00:00',
+                id: 4,
+                is_static_overridden: false,
+                label: 'dinbool',
+                static_value: '',
+                template_id: '2',
+                type: 'dynamic',
+                value_type: 'bool',
+              },
+            ],
           },
-          "created": "2020-05-14T18:18:34.401142+00:00",
-          "id": "1b32ee",
-          "label": "device2",
-          "templates": [
-            2
-          ]
+          created: '2020-05-14T18:18:34.401142+00:00',
+          id: '1b32ee',
+          label: 'device2',
+          templates: [
+            2,
+          ],
         },
         {
-          "attrs": {
-            "1": [
+          attrs: {
+            1: [
               {
-                "created": "2020-05-14T17:25:25.437877+00:00",
-                "id": 1,
-                "is_static_overridden": false,
-                "label": "din",
-                "static_value": "",
-                "template_id": "1",
-                "type": "dynamic",
-                "value_type": "string"
+                created: '2020-05-14T17:25:25.437877+00:00',
+                id: 1,
+                is_static_overridden: false,
+                label: 'din',
+                static_value: '',
+                template_id: '1',
+                type: 'dynamic',
+                value_type: 'string',
               },
               {
-                "created": "2020-05-14T17:25:25.439239+00:00",
-                "id": 2,
-                "is_static_overridden": false,
-                "label": "static",
-                "static_value": "20",
-                "template_id": "1",
-                "type": "static",
-                "value_type": "float"
+                created: '2020-05-14T17:25:25.439239+00:00',
+                id: 2,
+                is_static_overridden: false,
+                label: 'static',
+                static_value: '20',
+                template_id: '1',
+                type: 'static',
+                value_type: 'float',
               },
               {
-                "created": "2020-05-14T17:25:25.439943+00:00",
-                "id": 3,
-                "is_static_overridden": false,
-                "label": "actuate",
-                "static_value": "",
-                "template_id": "1",
-                "type": "actuator",
-                "value_type": "bool"
-              }
-            ]
+                created: '2020-05-14T17:25:25.439943+00:00',
+                id: 3,
+                is_static_overridden: false,
+                label: 'actuate',
+                static_value: '',
+                template_id: '1',
+                type: 'actuator',
+                value_type: 'bool',
+              },
+            ],
           },
-          "created": "2020-05-14T17:25:38.646423+00:00",
-          "id": "457be",
-          "label": "deviceMock",
-          "templates": [
-            1
-          ]
+          created: '2020-05-14T17:25:38.646423+00:00',
+          id: '457be',
+          label: 'deviceMock',
+          templates: [
+            1,
+          ],
         },
         {
-          "attrs": {
-            "2": [
+          attrs: {
+            2: [
               {
-                "created": "2020-05-14T18:15:47.307374+00:00",
-                "id": 6,
-                "is_static_overridden": false,
-                "label": "dina2",
-                "static_value": "",
-                "template_id": "2",
-                "type": "dynamic",
-                "value_type": "float"
+                created: '2020-05-14T18:15:47.307374+00:00',
+                id: 6,
+                is_static_overridden: false,
+                label: 'dina2',
+                static_value: '',
+                template_id: '2',
+                type: 'dynamic',
+                value_type: 'float',
               },
               {
-                "created": "2020-05-14T18:15:47.306332+00:00",
-                "id": 5,
-                "is_static_overridden": false,
-                "label": "static",
-                "static_value": "true",
-                "template_id": "2",
-                "type": "static",
-                "value_type": "bool"
+                created: '2020-05-14T18:15:47.306332+00:00',
+                id: 5,
+                is_static_overridden: false,
+                label: 'static',
+                static_value: 'true',
+                template_id: '2',
+                type: 'static',
+                value_type: 'bool',
               },
               {
-                "created": "2020-05-14T18:15:47.305416+00:00",
-                "id": 4,
-                "is_static_overridden": false,
-                "label": "dinbool",
-                "static_value": "",
-                "template_id": "2",
-                "type": "dynamic",
-                "value_type": "bool"
-              }
-            ]
+                created: '2020-05-14T18:15:47.305416+00:00',
+                id: 4,
+                is_static_overridden: false,
+                label: 'dinbool',
+                static_value: '',
+                template_id: '2',
+                type: 'dynamic',
+                value_type: 'bool',
+              },
+            ],
           },
-          "created": "2020-05-14T18:18:07.802635+00:00",
-          "id": "d16fe3",
-          "label": "device2Mock",
-          "templates": [
-            2
-          ]
-        }
+          created: '2020-05-14T18:18:07.802635+00:00',
+          id: 'd16fe3',
+          label: 'device2Mock',
+          templates: [
+            2,
+          ],
+        },
       ],
       pagination: {
         has_next: false,
@@ -247,53 +249,53 @@ it('should get a list of devices', () => {
   const root = {};
   const params = { page: { number: 1, size: 4 }, filter: { label: 'd' } };
 
-  return Resolvers.Query.getDevices(root, params).then((output) => {
+  return Resolvers.Query.getDevices(root, params, {}).then((output) => {
     expect(output).toEqual(
-        {
-          "currentPage": 1,
-          "devices": [
-            {
-              "attrs": [
-                {
-                  "label": "dina2",
-                  "value_type": "NUMBER"
-                },
-                {
-                  "label": "dinbool",
-                  "value_type": "BOOLEAN"
-                }
-              ],
-              "id": "1b32ee",
-              "label": "device2"
-            },
-            {
-              "attrs": [
-                {
-                  "label": "din",
-                  "value_type": "STRING"
-                }
-              ],
-              "id": "457be",
-              "label": "deviceMock"
-            },
-            {
-              "attrs": [
-                {
-                  "label": "dina2",
-                  "value_type": "NUMBER"
-                },
-                {
-                  "label": "dinbool",
-                  "value_type": "BOOLEAN"
-                }
-              ],
-              "id": "d16fe3",
-              "label": "device2Mock"
-            }
-          ],
-          "totalPages": 1
-        }
-    )
+      {
+        currentPage: 1,
+        devices: [
+          {
+            attrs: [
+              {
+                label: 'dina2',
+                valueType: 'NUMBER',
+              },
+              {
+                label: 'dinbool',
+                valueType: 'BOOLEAN',
+              },
+            ],
+            id: '1b32ee',
+            label: 'device2',
+          },
+          {
+            attrs: [
+              {
+                label: 'din',
+                valueType: 'STRING',
+              },
+            ],
+            id: '457be',
+            label: 'deviceMock',
+          },
+          {
+            attrs: [
+              {
+                label: 'dina2',
+                valueType: 'NUMBER',
+              },
+              {
+                label: 'dinbool',
+                valueType: 'BOOLEAN',
+              },
+            ],
+            id: 'd16fe3',
+            label: 'device2Mock',
+          },
+        ],
+        totalPages: 1,
+      },
+    );
   });
 });
 
@@ -341,7 +343,7 @@ it('should return a list of history entries', async () => {
               {
                 created: '2020-03-09T17:10:34.369905+00:00',
                 id: 2,
-                'is_static´_overridden': false,
+                is_static_overridden: false,
                 label: 'protocol',
                 static_value: 'mqtt',
                 type: 'protocol',
@@ -392,7 +394,7 @@ it('should return a list of history entries', async () => {
     }],
   }];
 
-  const result = await Resolvers.Query.getDeviceHistory(root, params);
+  const result = await Resolvers.Query.getDeviceHistory(root, params, {});
   expect(result).toEqual(expectedResult);
 });
 
@@ -408,31 +410,31 @@ it('should return empty array', async () => {
   };
 
   const devReading = {
-    'data': [{
-      "device_id": "0998",
-      "ts": "2018-03-22T13:47:07.050000Z",
-      "value": 10.6,
-      "attr": "temperature"
+    data: [{
+      device_id: '0998',
+      ts: '2018-03-22T13:47:07.050000Z',
+      value: 10.6,
+      attr: 'temperature',
     },
     {
-      "device_id": "0998",
-      "ts": "2018-03-22T13:46:42.455000Z",
-      "value": 15.6,
-      "attr": "temperature"
+      device_id: '0998',
+      ts: '2018-03-22T13:46:42.455000Z',
+      value: 15.6,
+      attr: 'temperature',
     },
     {
-      "device_id": "0998",
-      "ts": "2018-03-22T13:46:21.535000Z",
-      "value": 36.5,
-      "attr": "temperature"
-    }]
+      device_id: '0998',
+      ts: '2018-03-22T13:46:21.535000Z',
+      value: 36.5,
+      attr: 'temperature',
+    }],
   };
 
   axios.mockResolvedValue(null)
     .mockResolvedValueOnce(null)
     .mockResolvedValueOnce(devReading);
 
-  const result = await Resolvers.Query.getDeviceHistory(root, params);
+  const result = await Resolvers.Query.getDeviceHistory(root, params, {});
   expect(result).toEqual([]);
 });
 
@@ -452,7 +454,7 @@ it('should return history from 2 devices', async () => {
               {
                 created: '2020-03-09T17:10:34.369905+00:00',
                 id: 2,
-                'is_static_overridden': false,
+                is_static_overridden: false,
                 label: 'protocol',
                 static_value: 'mqtt',
                 type: 'protocol',
@@ -576,7 +578,7 @@ it('should return history from 2 devices', async () => {
     },
   };
 
-  const result = await Resolvers.Query.getDeviceHistory({}, params);
+  const result = await Resolvers.Query.getDeviceHistory({}, params, {});
   expect(result).toEqual([{
     attrs: [
       {
@@ -643,7 +645,7 @@ it('should return history from 1 device', async () => {
               {
                 created: '2020-03-09T17:10:34.369905+00:00',
                 id: 2,
-                'is_static´_overridden': false,
+                is_static_overridden: false,
                 label: 'protocol',
                 static_value: 'mqtt',
                 type: 'protocol',
@@ -733,7 +735,7 @@ it('should return history from 1 device', async () => {
     },
   };
 
-  const result = await Resolvers.Query.getDeviceHistory({}, params);
+  const result = await Resolvers.Query.getDeviceHistory({}, params, {});
   expect(result).toEqual([{
     deviceID: '0998',
     label: 'Thermometer',

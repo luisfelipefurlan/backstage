@@ -268,21 +268,27 @@ const Resolvers = {
 
       switch (operationType) {
         case 0:
+          // To get the latest N records
           queryStringParams += `${lastN && `&lastN=${lastN}`}`
           break
         case 1:
+          // To get the data for the last minutes
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "minute").toISOString()}`
           break
         case 2:
+          // To get the data for the last hours
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "hour").toISOString()}`
           break
         case 3:
+          // To get the data for the last days
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "days").toISOString()}`
           break
         case 4:
+          // To get the data for the last months
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "month").toISOString()}`
           break
         default:
+          // Standard option is to get data by time window
           queryStringParams = `${dateFrom && `&dateFrom=${dateFrom}`}${dateTo && `&dateTo=${dateTo}`}`;
           break
       }

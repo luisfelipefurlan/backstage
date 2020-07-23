@@ -292,7 +292,7 @@ const Resolvers = {
           queryStringParams = `${dateFrom && `&dateFrom=${dateFrom}`}${dateTo && `&dateTo=${dateTo}`}`;
           break
       }
-      console.log(queryStringParams);
+      //console.log(queryStringParams);
 
       try {
         devices.forEach((device) => {

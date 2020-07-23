@@ -43,9 +43,9 @@ type Device {
     devices: [HistoryDeviceInput]!
     dateFrom: String
     dateTo: String
-    #operationType corresponds to 0 (LastN), 1 (minutes), 2 (hours), 3 (days), 4 (months)
+    #operationType corresponds to 0 (the last N histories, Number of most current values), 1 (minutes, the last N minutes), 2 (hours, the last N hours), 3 (days, the last N days), 4 (months, the last N months)
     operationType: Int
-    #lastN will be used to obtain the values of minutes, hours, days and months when the operationType is non-zero#
+    #lastN will be used to obtain the values from the lastN of most current values, minutes, hours, days and months according to option operationType
     lastN: Int
  }
 

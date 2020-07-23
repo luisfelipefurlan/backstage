@@ -105,8 +105,8 @@ const Resolvers = {
           }
         }
 
-        if (params.filter) {
-          if (params.filter.label) {
+        if (!!params.filter) {
+          if (!!params.filter.label) {
             requestParameters.label = params.filter.label;
           }
         }
@@ -178,7 +178,7 @@ const Resolvers = {
           if (device.attrs) {
             device.attrs.forEach((attribute) => {
               let requestString = `/history/device/${device.deviceID}/history?attr=${attribute}`;
-              if (queryStringParams != null) {
+              if (!!queryStringParams) {
                 requestString += `&${queryStringParams}`;
               }
               const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))

@@ -9,7 +9,7 @@ afterEach(() => {
 
 it('should return a device', () => {
   const root = {};
-  const params = { deviceId: '10cf' };
+  const params = {deviceId: '10cf'};
   const context = {};
 
   axios.mockImplementationOnce(() => Promise.resolve({
@@ -105,7 +105,6 @@ it('should return a device', () => {
     });
   });
 });
-
 
 it('should get a list of devices', () => {
   axios.mockResolvedValue({
@@ -247,7 +246,7 @@ it('should get a list of devices', () => {
     },
   });
   const root = {};
-  const params = { page: { number: 1, size: 4 }, filter: { label: 'd' } };
+  const params = {page: {number: 1, size: 4}, filter: {label: 'd'}};
 
   return Resolvers.Query.getDevices(root, params, {}).then((output) => {
     expect(output).toEqual(
@@ -305,7 +304,7 @@ it('should return a list of history entries', async () => {
   const root = {};
   const params = {
     filter: {
-      devices: [{ deviceID: '0998', attrs: ['temperature'] }],
+      devices: [{deviceID: '0998', attrs: ['temperature']}],
       lastN: 3,
     },
   };
@@ -317,18 +316,18 @@ it('should return a list of history entries', async () => {
       value: 10.6,
       attr: 'temperature',
     },
-    {
-      device_id: '0998',
-      ts: '2018-03-22T13:46:42.455000Z',
-      value: 15.6,
-      attr: 'temperature',
-    },
-    {
-      device_id: '0998',
-      ts: '2018-03-22T13:46:21.535000Z',
-      value: 36.5,
-      attr: 'temperature',
-    }],
+      {
+        device_id: '0998',
+        ts: '2018-03-22T13:46:42.455000Z',
+        value: 15.6,
+        attr: 'temperature',
+      },
+      {
+        device_id: '0998',
+        ts: '2018-03-22T13:46:21.535000Z',
+        value: 36.5,
+        attr: 'temperature',
+      }],
   };
   const dev = {
     data: {
@@ -380,18 +379,18 @@ it('should return a list of history entries', async () => {
       value: 10.6,
       timestamp: '2018-03-22T13:47:07.050000Z',
     },
-    {
-      label: 'temperature',
-      valueType: 'NUMBER',
-      value: 15.6,
-      timestamp: '2018-03-22T13:46:42.455000Z',
-    },
-    {
-      label: 'temperature',
-      valueType: 'NUMBER',
-      value: 36.5,
-      timestamp: '2018-03-22T13:46:21.535000Z',
-    }],
+      {
+        label: 'temperature',
+        valueType: 'NUMBER',
+        value: 15.6,
+        timestamp: '2018-03-22T13:46:42.455000Z',
+      },
+      {
+        label: 'temperature',
+        valueType: 'NUMBER',
+        value: 36.5,
+        timestamp: '2018-03-22T13:46:21.535000Z',
+      }],
   }];
 
   const result = await Resolvers.Query.getDeviceHistory(root, params, {});
@@ -404,7 +403,7 @@ it('should return empty array', async () => {
   const root = {};
   const params = {
     filter: {
-      devices: [{ deviceID: '0998', attrs: ['temperature'] }],
+      devices: [{deviceID: '0998', attrs: ['temperature']}],
       lastN: 3,
     },
   };
@@ -416,18 +415,18 @@ it('should return empty array', async () => {
       value: 10.6,
       attr: 'temperature',
     },
-    {
-      device_id: '0998',
-      ts: '2018-03-22T13:46:42.455000Z',
-      value: 15.6,
-      attr: 'temperature',
-    },
-    {
-      device_id: '0998',
-      ts: '2018-03-22T13:46:21.535000Z',
-      value: 36.5,
-      attr: 'temperature',
-    }],
+      {
+        device_id: '0998',
+        ts: '2018-03-22T13:46:42.455000Z',
+        value: 15.6,
+        attr: 'temperature',
+      },
+      {
+        device_id: '0998',
+        ts: '2018-03-22T13:46:21.535000Z',
+        value: 36.5,
+        attr: 'temperature',
+      }],
   };
 
   axios.mockResolvedValue(null)
@@ -519,18 +518,18 @@ it('should return history from 2 devices', async () => {
         value: 10.6,
         attr: 'temperature',
       },
-      {
-        device_id: '0998',
-        ts: '2018-03-22T13:46:42.455000Z',
-        value: 15.6,
-        attr: 'temperature',
-      },
-      {
-        device_id: '0998',
-        ts: '2018-03-22T13:46:21.535000Z',
-        value: 36.5,
-        attr: 'temperature',
-      }],
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:42.455000Z',
+          value: 15.6,
+          attr: 'temperature',
+        },
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:21.535000Z',
+          value: 36.5,
+          attr: 'temperature',
+        }],
     },
     1: {
       data: [{
@@ -540,20 +539,20 @@ it('should return history from 2 devices', async () => {
         ts: '2020-05-06T16:48:50.408000Z',
         metadata: {},
       },
-      {
-        attr: 'hue',
-        value: '#4785FF',
-        device_id: '8aa0f9',
-        ts: '2020-05-06T16:25:13.366000Z',
-        metadata: {},
-      },
-      {
-        attr: 'hue',
-        value: '#414DE8',
-        device_id: '8aa0f9',
-        ts: '2020-05-06T16:25:06.697000Z',
-        metadata: {},
-      }],
+        {
+          attr: 'hue',
+          value: '#4785FF',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:13.366000Z',
+          metadata: {},
+        },
+        {
+          attr: 'hue',
+          value: '#414DE8',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:06.697000Z',
+          metadata: {},
+        }],
     },
     2: [{
       attr: 'intensity',
@@ -573,7 +572,7 @@ it('should return history from 2 devices', async () => {
 
   const params = {
     filter: {
-      devices: [{ deviceID: '0998', attrs: ['temperature'] }, { deviceID: '8aa0f9', attrs: ['hue', 'intensity'] }],
+      devices: [{deviceID: '0998', attrs: ['temperature']}, {deviceID: '8aa0f9', attrs: ['hue', 'intensity']}],
       lastN: 3,
     },
   };
@@ -603,30 +602,30 @@ it('should return history from 2 devices', async () => {
     deviceID: '0998',
     label: 'Thermometer',
   },
-  {
-    attrs: [
-      {
-        label: 'hue',
-        timestamp: '2020-05-06T16:48:50.408000Z',
-        value: '#4785FF',
-        valueType: 'STRING',
-      },
-      {
-        label: 'hue',
-        timestamp: '2020-05-06T16:25:13.366000Z',
-        value: '#4785FF',
-        valueType: 'STRING',
-      },
-      {
-        label: 'hue',
-        timestamp: '2020-05-06T16:25:06.697000Z',
-        value: '#414DE8',
-        valueType: 'STRING',
-      },
-    ],
-    deviceID: '8aa0f9',
-    label: 'Living_Room',
-  }]);
+    {
+      attrs: [
+        {
+          label: 'hue',
+          timestamp: '2020-05-06T16:48:50.408000Z',
+          value: '#4785FF',
+          valueType: 'STRING',
+        },
+        {
+          label: 'hue',
+          timestamp: '2020-05-06T16:25:13.366000Z',
+          value: '#4785FF',
+          valueType: 'STRING',
+        },
+        {
+          label: 'hue',
+          timestamp: '2020-05-06T16:25:06.697000Z',
+          value: '#414DE8',
+          valueType: 'STRING',
+        },
+      ],
+      deviceID: '8aa0f9',
+      label: 'Living_Room',
+    }]);
 });
 
 it('should return history from 1 device', async () => {
@@ -677,18 +676,18 @@ it('should return history from 1 device', async () => {
         value: 10.6,
         attr: 'temperature',
       },
-      {
-        device_id: '0998',
-        ts: '2018-03-22T13:46:42.455000Z',
-        value: 15.6,
-        attr: 'temperature',
-      },
-      {
-        device_id: '0998',
-        ts: '2018-03-22T13:46:21.535000Z',
-        value: 36.5,
-        attr: 'temperature',
-      }],
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:42.455000Z',
+          value: 15.6,
+          attr: 'temperature',
+        },
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:21.535000Z',
+          value: 36.5,
+          attr: 'temperature',
+        }],
     },
     1: {
       data: [{
@@ -698,20 +697,20 @@ it('should return history from 1 device', async () => {
         ts: '2020-05-06T16:48:50.408000Z',
         metadata: {},
       },
-      {
-        attr: 'hue',
-        value: '#4785FF',
-        device_id: '8aa0f9',
-        ts: '2020-05-06T16:25:13.366000Z',
-        metadata: {},
-      },
-      {
-        attr: 'hue',
-        value: '#414DE8',
-        device_id: '8aa0f9',
-        ts: '2020-05-06T16:25:06.697000Z',
-        metadata: {},
-      }],
+        {
+          attr: 'hue',
+          value: '#4785FF',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:13.366000Z',
+          metadata: {},
+        },
+        {
+          attr: 'hue',
+          value: '#414DE8',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:06.697000Z',
+          metadata: {},
+        }],
     },
     2: [{
       attr: 'intensity',
@@ -730,7 +729,7 @@ it('should return history from 1 device', async () => {
 
   const params = {
     filter: {
-      devices: [{ deviceID: '0998', attrs: ['temperature'] }, { deviceID: '8aa0f9', attrs: ['hue', 'intensity'] }],
+      devices: [{deviceID: '0998', attrs: ['temperature']}, {deviceID: '8aa0f9', attrs: ['hue', 'intensity']}],
       lastN: 3,
     },
   };
@@ -745,17 +744,159 @@ it('should return history from 1 device', async () => {
       value: 10.6,
       timestamp: '2018-03-22T13:47:07.050000Z',
     },
-    {
-      label: 'temperature',
-      valueType: 'NUMBER',
-      value: 15.6,
-      timestamp: '2018-03-22T13:46:42.455000Z',
-    },
-    {
-      label: 'temperature',
-      valueType: 'NUMBER',
-      value: 36.5,
-      timestamp: '2018-03-22T13:46:21.535000Z',
-    }],
+      {
+        label: 'temperature',
+        valueType: 'NUMBER',
+        value: 15.6,
+        timestamp: '2018-03-22T13:46:42.455000Z',
+      },
+      {
+        label: 'temperature',
+        valueType: 'NUMBER',
+        value: 36.5,
+        timestamp: '2018-03-22T13:46:21.535000Z',
+      }],
   }]);
+});
+
+it('Consult the history for the last 3 records (dashboard)', async () => {
+  jest.mock('axios');
+
+  const historyData = {
+    0: {
+      data: [{
+        device_id: '0998',
+        ts: '2018-03-22T13:47:07.050000Z',
+        value: 10.6,
+        attr: 'temperature',
+      },
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:42.455000Z',
+          value: 15.6,
+          attr: 'temperature',
+        },
+        {
+          device_id: '0998',
+          ts: '2018-03-22T13:46:21.535000Z',
+          value: 36.5,
+          attr: 'temperature',
+        }],
+    },
+    1: {
+      data: [{
+        attr: 'hue',
+        value: '#4785FF',
+        device_id: '8aa0f9',
+        ts: '2018-03-22T13:47:07.408000Z',
+        metadata: {},
+      },
+        {
+          attr: 'hue',
+          value: '#4785FF',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:13.366000Z',
+          metadata: {},
+        },
+        {
+          attr: 'hue',
+          value: '#414DE8',
+          device_id: '8aa0f9',
+          ts: '2020-05-06T16:25:06.697000Z',
+          metadata: {},
+        }],
+    },
+    2: [{
+      attr: 'intensity',
+      value: 5,
+      device_id: '8aa0f9',
+      ts: '2020-05-06T16:48:50.408000Z',
+      metadata: {},
+    }],
+  };
+
+  axios.mockResolvedValue('default value')
+    .mockResolvedValueOnce(historyData[0])
+    .mockResolvedValueOnce(historyData[1])
+    .mockResolvedValueOnce(historyData[2])
+
+  const params = {
+    filter: {
+      devices: [{deviceID: '0998', attrs: ['temperature']}, {deviceID: '8aa0f9', attrs: ['hue']}], operationType: 0, lastN: 3,
+    },
+  };
+
+  const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
+  expect(result).toEqual('[{"timestamp":"2018-03-22T13:47:07","0998temperature":10.6,"8aa0f9hue":"#4785FF"},{"timestamp":"2018-03-22T13:46:42","0998temperature":15.6,"8aa0f9hue":null},{"timestamp":"2018-03-22T13:46:21","0998temperature":36.5,"8aa0f9hue":null},{"timestamp":"2020-05-06T16:25:13","0998temperature":null,"8aa0f9hue":"#4785FF"},{"timestamp":"2020-05-06T16:25:06","0998temperature":null,"8aa0f9hue":"#414DE8"}]')
+});
+
+it('Consult the history by time period (dashboard)', async () => {
+  jest.mock('axios');
+
+  const historyData = {
+    0: {
+      data: [{
+        device_id: '0998',
+        ts: '2020-07-20T16:47:07.050000Z',
+        value: 10.6,
+        attr: 'temperature',
+      },
+        {
+          device_id: '0998',
+          ts: '2020-07-20T15:46:42.455000Z',
+          value: 15.6,
+          attr: 'temperature',
+        },
+        {
+          device_id: '0998',
+          ts: '2020-07-20T15:46:21.535000Z',
+          value: 36.5,
+          attr: 'temperature',
+        }],
+    },
+    1: {
+      data: [{
+        attr: 'hue',
+        value: '#4785FF',
+        device_id: '8aa0f9',
+        ts: '2020-07-20T16:47:07.408000Z',
+        metadata: {},
+      },
+        {
+          attr: 'hue',
+          value: '#4785FF',
+          device_id: '8aa0f9',
+          ts: '2020-07-20T16:25:13.366000Z',
+          metadata: {},
+        },
+        {
+          attr: 'hue',
+          value: '#414DE8',
+          device_id: '8aa0f9',
+          ts: '2020-07-20T13:25:06.697000Z',
+          metadata: {},
+        }],
+    },
+    2: [{
+      attr: 'intensity',
+      value: 5,
+      device_id: '8aa0f9',
+      ts: '2020-07-20T16:48:50.408000Z',
+      metadata: {},
+    }],
+  };
+
+  axios.mockResolvedValue('default value')
+    .mockResolvedValueOnce(historyData[0])
+    .mockResolvedValueOnce(historyData[1])
+    .mockResolvedValueOnce(historyData[2])
+
+  const params = {
+    filter: {
+      devices: [{deviceID: '0998', attrs: ['temperature']}, {deviceID: '8aa0f9', attrs: ['hue']}], dateFrom: "2020-07-20T15:00:00.000z", dateTo: "2020-07-20T17:00:00.000z",
+    },
+  };
+
+  const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
+  expect(result).toEqual('[{"timestamp":"2020-07-20T16:47:07","0998temperature":10.6,"8aa0f9hue":"#4785FF"},{"timestamp":"2020-07-20T15:46:42","0998temperature":15.6,"8aa0f9hue":null},{"timestamp":"2020-07-20T15:46:21","0998temperature":36.5,"8aa0f9hue":null},{"timestamp":"2020-07-20T16:25:13","0998temperature":null,"8aa0f9hue":"#4785FF"},{"timestamp":"2020-07-20T13:25:06","0998temperature":null,"8aa0f9hue":"#414DE8"}]')
 });

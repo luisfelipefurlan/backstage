@@ -43,6 +43,7 @@ type Device {
     devices: [HistoryDeviceInput]!
     dateFrom: String
     dateTo: String
+    operationType: Int
     lastN: Int
  }
 
@@ -59,6 +60,7 @@ type Device {
     valueType: ValueType!
     value: String!
     timestamp: String!
+    deviceID: String!
  }
  #Historical reading from device#
  type History{

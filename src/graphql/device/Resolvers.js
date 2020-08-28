@@ -332,7 +332,7 @@ const Resolvers = {
 
         sortedHistory = _.orderBy(history, (o) => {
           return moment(o.timestamp).format('YYYYMMDDHHmmss');
-        }, ['desc']);
+        }, ['asc']);
 
 
       } catch (error) {

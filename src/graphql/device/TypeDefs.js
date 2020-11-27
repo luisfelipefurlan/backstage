@@ -17,6 +17,8 @@ type Device {
  type Attr {
     label: String!
     valueType: ValueType!
+    isDynamic: Boolean!
+    staticValue: String
  }
 
 #A paginated list of Devices.#

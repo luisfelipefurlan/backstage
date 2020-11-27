@@ -3,6 +3,14 @@ const UTIL = require('../utils/AxiosUtils');
 const _ = require('lodash');
 const moment = require('moment');
 const LOG = require('../../utils/Log');
+const {
+  reduceList,
+  convertList,
+  formatValueType,
+  resolveDeviceAttributes,
+  formatOutPut,
+  devicesPromises
+} = require('./Helpers')
 
 const paramsAxios = {
   token: null,
@@ -12,46 +20,15 @@ const setToken = ((token) => {
 });
 const optionsAxios = ((method, url) => UTIL.optionsAxios(method, url, paramsAxios.token));
 
-const reduceList = (prop) => {
-  const array = [];
-  Object.keys(prop).forEach(listKey => {
-    array.push(
-      prop[listKey].reduce((acc, fItem) => {
-        const obj = {...fItem};
-        Object.keys(obj).forEach(item => {
-          acc[item] = obj[item];
-        });
-        return acc;
-      }, {}),
-    );
-  });
-  return array;
-};
-
-const convertList = list => _.groupBy(list, item => item.timestamp);
-
-function formatValueType(valType) {
-  let valueType = '';
-  switch (valType) {
-    case 'integer':
-      valueType = 'NUMBER';
-      break;
-    case 'float':
-      valueType = 'NUMBER';
-      break;
-    case 'bool':
-      valueType = 'BOOLEAN';
-      break;
-    case 'string':
-      valueType = 'STRING';
-      break;
-    case 'geo:point':
-      valueType = 'GEO';
-      break;
-    default:
-      valueType = 'UNDEFINED';
-  }
-  return valueType;
+const operations = {
+  LAST: {
+    MOUTHS: 4,
+    MINUTES: 3,
+    HOURS: 2,
+    DAYS: 1,
+    N: 0
+  },
+  MAP: 5
 }
 
 const Resolvers = {
@@ -129,12 +106,14 @@ const Resolvers = {
           if (device.attrs) {
             Object.keys(device.attrs).forEach((key) => {
               device.attrs[key].forEach((attr) => {
-                if (attr.type !== 'dynamic') {
+                if (attr.type !== 'dynamic' && attr.value_type !== 'geo:point') {
                   return;
                 }
                 attributes.push({
                   label: attr.label,
                   valueType: formatValueType(attr.value_type),
+                  isDynamic: attr.type === 'dynamic',
+                  staticValue: attr.static_value
                 });
               });
             });
@@ -166,7 +145,6 @@ const Resolvers = {
       setToken(context.token);
       const history = [];
       const historyPromiseArray = [];
-      const fetchedData = [];
       const devicePromiseArray = [];
       const devicesInfo = [];
 
@@ -189,16 +167,7 @@ const Resolvers = {
         });
 
         // Contains the list of attribute values
-        await Promise.all(historyPromiseArray).then((values) => {
-          Object.keys(values).forEach((keys) => {
-            if (!!values[keys] && !!values[keys].data && Array.isArray(values[keys].data)) {
-              fetchedData.push(...values[keys].data)
-            }
-          });
-        }).catch((error) => {
-          LOG.error(error.stack || error);
-          throw error;
-        });
+        const fetchedData = await resolveDeviceAttributes(historyPromiseArray);
 
         // Contains a list of device details
         await Promise.all(devicePromiseArray).then((device) => {
@@ -261,28 +230,28 @@ const Resolvers = {
       setToken(context.token);
       let sortedHistory = [];
       let queryStringParams = '';
-      const history = [];
-      const historyPromiseArray = [];
-      const fetchedData = [];
+      let fetchedData;
+      let historyPromiseArray = [];
 
       switch (operationType) {
-        case 0:
+        case operations.MAP:
+        case operations.LAST.N:
           // To get the latest N records
           queryStringParams += `${lastN && `&lastN=${lastN}`}`
           break
-        case 1:
+        case operations.LAST.MINUTES:
           // To get the data for the last minutes
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "minute").toISOString()}`
           break
-        case 2:
+        case operations.LAST.HOURS:
           // To get the data for the last hours
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "hour").toISOString()}`
           break
-        case 3:
+        case operations.LAST.DAYS:
           // To get the data for the last days
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "days").toISOString()}`
           break
-        case 4:
+        case operations.LAST.MOUTHS:
           // To get the data for the last months
           queryStringParams += `&dateFrom=${moment().subtract(lastN, "month").toISOString()}`
           break
@@ -293,47 +262,26 @@ const Resolvers = {
       }
 
       try {
-        devices.forEach((device) => {
-          if (device.attrs) {
-            device.attrs.forEach((attribute) => {
-              const requestString = `/history/device/${device.deviceID}/history?attr=${attribute}${queryStringParams ? `${queryStringParams}` : ''}`;
-              const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
-                .catch(() => Promise.resolve(null));
-              historyPromiseArray.push(promiseHistory);
-            });
-          }
-        });
+        historyPromiseArray = devicesPromises(devices, queryStringParams, optionsAxios)
 
-        // Contains the list of attribute values
-        await Promise.all(historyPromiseArray).then((values) => {
-          Object.keys(values).forEach((keys) => {
-            if (!!values[keys] && !!values[keys].data && Array.isArray(values[keys].data)) {
-              fetchedData.push(...values[keys].data)
-            }
-          });
-        }).catch((error) => {
-          LOG.error(error.stack || error);
-          throw error;
-        });
-
-        fetchedData.forEach((data) => {
-          const {attr, device_id, value, ts} = data;
-          history.push({
-            [`${device_id}${attr}`]: isNaN(value) ? value : parseFloat(value),
-            timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
-          });
-        });
-
-        sortedHistory = _.orderBy(history, (o) => {
-          return moment(o.timestamp).format('YYYYMMDDHHmmss');
-        }, ['asc']);
-
-
+        fetchedData = await resolveDeviceAttributes(historyPromiseArray);
+        console.log(fetchedData);
       } catch (error) {
         LOG.error(error.stack || error);
         throw error;
       }
-      return JSON.stringify(reduceList(convertList(sortedHistory)));
+
+      const {history, historyObj} = formatOutPut(fetchedData, operationType)
+
+      sortedHistory = _.orderBy(history, (o) => {
+        return moment(o.timestamp).format('YYYYMMDDHHmmss');
+      }, ['asc']);
+
+      if (operationType === operations.MAP) {
+        return JSON.stringify(historyObj);
+      } else {
+        return JSON.stringify(reduceList(convertList(sortedHistory)));
+      }
     },
   },
 };

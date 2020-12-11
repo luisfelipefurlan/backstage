@@ -1,7 +1,7 @@
 const axios = require('axios');
-const UTIL = require('../utils/AxiosUtils');
 const _ = require('lodash');
 const moment = require('moment');
+const UTIL = require('../utils/AxiosUtils');
 const LOG = require('../../utils/Log');
 const {
   reduceList,
@@ -9,8 +9,8 @@ const {
   formatValueType,
   resolveDeviceAttributes,
   formatOutPut,
-  devicesPromises
-} = require('./Helpers')
+  devicesPromises,
+} = require('./Helpers');
 
 const paramsAxios = {
   token: null,
@@ -26,19 +26,20 @@ const operations = {
     MINUTES: 3,
     HOURS: 2,
     DAYS: 1,
-    N: 0
+    N: 0,
   },
-  MAP: 5
-}
+  MAP: 5,
+  TEMPLATES: 7,
+};
 
 const Resolvers = {
   Query: {
-    async getDeviceById(root, {deviceId}, context) {
+    async getDeviceById(root, { deviceId }, context) {
       setToken(context.token);
       const device = {};
 
       try {
-        const {data: deviceData} = await axios(optionsAxios(UTIL.GET, `/device/${deviceId}`));
+        const { data: deviceData } = await axios(optionsAxios(UTIL.GET, `/device/${deviceId}`));
         device.id = deviceData.id;
         device.label = deviceData.label;
         device.attrs = [];
@@ -79,8 +80,8 @@ const Resolvers = {
           }
         }
 
-        if (!!params.filter) {
-          if (!!params.filter.label) {
+        if (params.filter) {
+          if (params.filter.label) {
             requestParameters.label = params.filter.label;
           }
         }
@@ -98,7 +99,7 @@ const Resolvers = {
           }
         });
 
-        const {data: fetchedData} = await axios(optionsAxios(UTIL.GET, requestString));
+        const { data: fetchedData } = await axios(optionsAxios(UTIL.GET, requestString));
         const devices = [];
 
         fetchedData.devices.forEach((device) => {
@@ -113,7 +114,7 @@ const Resolvers = {
                   label: attr.label,
                   valueType: formatValueType(attr.value_type),
                   isDynamic: attr.type === 'dynamic',
-                  staticValue: attr.static_value
+                  staticValue: attr.static_value,
                 });
               });
             });
@@ -140,8 +141,13 @@ const Resolvers = {
 
     async getDeviceHistory(
       root,
-      {filter: {dateFrom = '', dateTo = '', lastN = '', devices = []}},
-      context) {
+      {
+        filter: {
+          dateFrom = '', dateTo = '', lastN = '', devices = [],
+        },
+      },
+      context,
+    ) {
       setToken(context.token);
       const history = [];
       const historyPromiseArray = [];
@@ -149,13 +155,13 @@ const Resolvers = {
       const devicesInfo = [];
 
       try {
-        let queryStringParams = `${dateFrom && `dateFrom=${dateFrom}&`}${dateTo && `dateTo=${dateTo}&`}${lastN && `lastN=${lastN}&`}`;
+        const queryStringParams = `${dateFrom && `dateFrom=${dateFrom}&`}${dateTo && `dateTo=${dateTo}&`}${lastN && `lastN=${lastN}&`}`;
 
         devices.forEach((device) => {
           if (device.attrs) {
             device.attrs.forEach((attribute) => {
               let requestString = `/history/device/${device.deviceID}/history?attr=${attribute}`;
-              if (!!queryStringParams) {
+              if (queryStringParams) {
                 requestString += `&${queryStringParams}`;
               }
               const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
@@ -208,7 +214,7 @@ const Resolvers = {
             }
           });
 
-          if (!!readings.length) {
+          if (readings.length) {
             history.push({
               deviceID: deviceObj.id,
               label: deviceObj.label,
@@ -220,13 +226,19 @@ const Resolvers = {
         LOG.error(error.stack || error);
         throw error;
       }
+
       return history;
     },
 
     async getDeviceHistoryForDashboard(
       root,
-      {filter: {dateFrom = '', dateTo = '', lastN = '', operationType = 0, devices = []}},
-      context) {
+      {
+        filter: {
+          dateFrom = '', dateTo = '', lastN = '', operationType = 0, devices = [], templates = [],
+        },
+      },
+      context,
+    ) {
       setToken(context.token);
       let sortedHistory = [];
       let queryStringParams = '';
@@ -234,54 +246,71 @@ const Resolvers = {
       let historyPromiseArray = [];
 
       switch (operationType) {
+        case operations.TEMPLATES:
+          queryStringParams += `${lastN && `&lastN=${lastN}`}`;
+          break;
         case operations.MAP:
         case operations.LAST.N:
           // To get the latest N records
-          queryStringParams += `${lastN && `&lastN=${lastN}`}`
-          break
+          queryStringParams += `${lastN && `&lastN=${lastN}`}`;
+          break;
         case operations.LAST.MINUTES:
           // To get the data for the last minutes
-          queryStringParams += `&dateFrom=${moment().subtract(lastN, "minute").toISOString()}`
-          break
+          queryStringParams += `&dateFrom=${moment().subtract(lastN, 'minute').toISOString()}`;
+          break;
         case operations.LAST.HOURS:
           // To get the data for the last hours
-          queryStringParams += `&dateFrom=${moment().subtract(lastN, "hour").toISOString()}`
-          break
+          queryStringParams += `&dateFrom=${moment().subtract(lastN, 'hour').toISOString()}`;
+          break;
         case operations.LAST.DAYS:
           // To get the data for the last days
-          queryStringParams += `&dateFrom=${moment().subtract(lastN, "days").toISOString()}`
-          break
+          queryStringParams += `&dateFrom=${moment().subtract(lastN, 'days').toISOString()}`;
+          break;
         case operations.LAST.MOUTHS:
           // To get the data for the last months
-          queryStringParams += `&dateFrom=${moment().subtract(lastN, "month").toISOString()}`
-          break
+          queryStringParams += `&dateFrom=${moment().subtract(lastN, 'month').toISOString()}`;
+          break;
         default:
           // Standard option is to get data by time window
           queryStringParams = `${dateFrom && `&dateFrom=${dateFrom}`}${dateTo && `&dateTo=${dateTo}`}`;
-          break
+          break;
       }
 
+      let auxDevices = [];
       try {
-        historyPromiseArray = devicesPromises(devices, queryStringParams, optionsAxios)
-
-        fetchedData = await resolveDeviceAttributes(historyPromiseArray);
-        console.log(fetchedData);
+        if (operationType === operations.TEMPLATES) {
+          // TODO: multiples templates
+          const { templateID } = templates[0];
+          const { attrs } = templates[0];
+          const requestString = `/device/template/${templateID}`;
+          const { data: fetchedDv } = await axios(optionsAxios(UTIL.GET, requestString));
+          auxDevices = fetchedDv.devices.map(device => ({ deviceID: device.id, attrs }));
+        } else {
+          auxDevices = devices;
+        }
       } catch (error) {
         LOG.error(error.stack || error);
         throw error;
       }
 
-      const {history, historyObj} = formatOutPut(fetchedData, operationType)
+      try {
+        historyPromiseArray = devicesPromises(auxDevices, queryStringParams, optionsAxios);
 
-      sortedHistory = _.orderBy(history, (o) => {
-        return moment(o.timestamp).format('YYYYMMDDHHmmss');
-      }, ['asc']);
+        fetchedData = await resolveDeviceAttributes(historyPromiseArray);
+      } catch (error) {
+        LOG.error(error.stack || error);
+        throw error;
+      }
+
+      const { history, historyObj } = formatOutPut(fetchedData, operationType);
+
+      sortedHistory = _.orderBy(history, o => moment(o.timestamp).format('YYYYMMDDHHmmss'), ['asc']);
 
       if (operationType === operations.MAP) {
         return JSON.stringify(historyObj);
-      } else {
-        return JSON.stringify(reduceList(convertList(sortedHistory)));
       }
+
+      return JSON.stringify(reduceList(convertList(sortedHistory)));
     },
   },
 };

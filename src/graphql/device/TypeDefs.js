@@ -65,6 +65,8 @@ type Device {
     templateID: String!
     #attributes which readings are to be retrieved#
     attrs: [String]
+    #static attributes which readings are to be retrieved#
+    staticAttrs: [String]
  }
  #Historical reading from an attribute#
  type HistoryAttr {

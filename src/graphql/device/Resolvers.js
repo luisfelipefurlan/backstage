@@ -10,6 +10,7 @@ const {
   resolveDeviceAttributes,
   formatOutPut,
   devicesPromises,
+  operations
 } = require('./Helpers');
 
 const paramsAxios = {
@@ -20,26 +21,14 @@ const setToken = ((token) => {
 });
 const optionsAxios = ((method, url) => UTIL.optionsAxios(method, url, paramsAxios.token));
 
-const operations = {
-  LAST: {
-    MOUTHS: 4,
-    MINUTES: 3,
-    HOURS: 2,
-    DAYS: 1,
-    N: 0,
-  },
-  MAP: 5,
-  TEMPLATES: 7,
-};
-
 const Resolvers = {
   Query: {
-    async getDeviceById(root, { deviceId }, context) {
+    async getDeviceById(root, {deviceId}, context) {
       setToken(context.token);
       const device = {};
 
       try {
-        const { data: deviceData } = await axios(optionsAxios(UTIL.GET, `/device/${deviceId}`));
+        const {data: deviceData} = await axios(optionsAxios(UTIL.GET, `/device/${deviceId}`));
         device.id = deviceData.id;
         device.label = deviceData.label;
         device.attrs = [];
@@ -99,7 +88,7 @@ const Resolvers = {
           }
         });
 
-        const { data: fetchedData } = await axios(optionsAxios(UTIL.GET, requestString));
+        const {data: fetchedData} = await axios(optionsAxios(UTIL.GET, requestString));
         const devices = [];
 
         fetchedData.devices.forEach((device) => {
@@ -244,11 +233,10 @@ const Resolvers = {
       let queryStringParams = '';
       let fetchedData;
       let historyPromiseArray = [];
-
+      let auxStaticAttrs = [];
       switch (operationType) {
         case operations.TEMPLATES:
-          queryStringParams += `${lastN && `&lastN=${lastN}`}`;
-          break;
+        case operations.CSMAP:
         case operations.MAP:
         case operations.LAST.N:
           // To get the latest N records
@@ -278,13 +266,22 @@ const Resolvers = {
 
       let auxDevices = [];
       try {
-        if (operationType === operations.TEMPLATES) {
+        if (operationType === operations.TEMPLATES || operationType === operations.CSMAP) {
           // TODO: multiples templates
-          const { templateID } = templates[0];
-          const { attrs } = templates[0];
+          const {templateID, attrs = [], staticAttrs = []} = templates[0];
           const requestString = `/device/template/${templateID}`;
-          const { data: fetchedDv } = await axios(optionsAxios(UTIL.GET, requestString));
-          auxDevices = fetchedDv.devices.map(device => ({ deviceID: device.id, attrs }));
+          const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
+          auxDevices = fetchedDv.devices.map(device => ({deviceID: device.id, attrs}));
+          if (operationType === operations.CSMAP) {
+            fetchedDv.devices.forEach((device) => {
+              device.attrs[templateID].forEach(attribute => {
+                if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
+                  console.log(device);
+                  auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label })
+                }
+              })
+            })
+          }
         } else {
           auxDevices = devices;
         }
@@ -292,7 +289,6 @@ const Resolvers = {
         LOG.error(error.stack || error);
         throw error;
       }
-
       try {
         historyPromiseArray = devicesPromises(auxDevices, queryStringParams, optionsAxios);
 
@@ -302,11 +298,15 @@ const Resolvers = {
         throw error;
       }
 
-      const { history, historyObj } = formatOutPut(fetchedData, operationType);
+      const {history, historyObj} = formatOutPut(fetchedData, operationType, auxStaticAttrs);
 
       sortedHistory = _.orderBy(history, o => moment(o.timestamp).format('YYYYMMDDHHmmss'), ['asc']);
 
       if (operationType === operations.MAP) {
+        return JSON.stringify(historyObj);
+      }
+
+      if (operationType === operations.CSMAP) {
         return JSON.stringify(historyObj);
       }
 

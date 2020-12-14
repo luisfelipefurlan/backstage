@@ -3,6 +3,19 @@ const LOG = require('../../utils/Log');
 const axios = require('axios');
 const UTIL = require('../utils/AxiosUtils');
 
+const operations = {
+  LAST: {
+    MOUTHS: 4,
+    MINUTES: 3,
+    HOURS: 2,
+    DAYS: 1,
+    N: 0,
+  },
+  MAP: 5,
+  CSMAP: 6,
+  TEMPLATES: 7,
+};
+
 const reduceList = (prop) => {
   const array = [];
   Object.keys(prop).forEach(listKey => {
@@ -47,9 +60,8 @@ const formatValueType = (valType) => {
 
 const parseGeo = value => {
   console.log(value);
-  const [lat, long] = value.split(',')
-  console.log(lat);
-  console.log(long);
+  const toParse = value ? value : '[0, 0]';
+  const [lat, long] = toParse.split(',')
   return [parseFloat(lat), parseFloat(long)]
 }
 
@@ -70,15 +82,24 @@ const resolveDeviceAttributes = async (promises) => {
   return attributes;
 };
 
-const formatOutPut = (attributes, operationType) => {
+const formatOutPut = (attributes, operationType, staticAttributes) => {
   const history = [];
   const historyObj = {};
 
   attributes.forEach(({attr, device_id, value, ts}) => {
-    if (operationType === 5) {
+    if (operationType === operations.MAP) {
       historyObj[`${device_id}${attr}`] = {
         value: parseGeo(value),
         timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
+      }
+    } else if (operationType === operations.CSMAP) {
+      const value = _.find(staticAttributes, staticAttribute => {
+        return staticAttribute.deviceID === device_id
+      });
+      historyObj[`${device_id}${attr}`] = {
+        value: parseGeo(value.static_value),
+        timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
+        deviceLabel: value.deviceLabel,
       }
     } else {
       history.push({
@@ -113,5 +134,6 @@ module.exports = {
   parseGeo,
   resolveDeviceAttributes,
   formatOutPut,
-  devicesPromises
+  devicesPromises,
+  operations
 };

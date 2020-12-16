@@ -269,7 +269,7 @@ const Resolvers = {
         if (operationType === operations.TEMPLATES || operationType === operations.CSMAP) {
           // TODO: multiples templates
           const {templateID, attrs = [], staticAttrs = []} = templates[0];
-          const requestString = `/device/template/${templateID}`;
+          const requestString = `/device?page_size=999&page_num=1&template=${templateID}`;
           const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
           auxDevices = fetchedDv.devices.map(device => ({deviceID: device.id, attrs}));
           if (operationType === operations.CSMAP) {
@@ -289,6 +289,7 @@ const Resolvers = {
         LOG.error(error.stack || error);
         throw error;
       }
+
       try {
         historyPromiseArray = devicesPromises(auxDevices, queryStringParams, optionsAxios);
 

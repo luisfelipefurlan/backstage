@@ -2,6 +2,7 @@ const _ = require('lodash');
 const LOG = require('../../utils/Log');
 const axios = require('axios');
 const UTIL = require('../utils/AxiosUtils');
+const querystring = require('querystring');
 
 const operations = {
   LAST: {
@@ -118,7 +119,17 @@ const devicesPromises = (devices, queryStringParams, optionsAxios) => {
       device.attrs.forEach((attribute) => {
         const requestString = `/history/device/${device.deviceID}/history?attr=${attribute}${queryStringParams ? `${queryStringParams}` : ''}`;
         const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
-          .catch(() => Promise.resolve(null));
+          .catch((e) => {
+            console.log(e.response.config.url)
+            return new Promise((resolve, reject) => {
+              const urlArray = e.response.config.url.split('/')
+              const q = querystring.parse(urlArray[6]);
+              console.log(urlArray[5]);
+              console.log(q.attr);
+              resolve([{attr: q.attr, value: 0, device_id: urlArray[5], ts: "0001-01-01T00:00:0Z", metadata: {}}]);
+            });
+          });
+      // .catch(() => Promise.resolve(null));
         historyPromiseArray.push(promiseHistory);
       });
     }

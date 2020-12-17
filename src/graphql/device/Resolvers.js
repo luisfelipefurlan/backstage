@@ -271,7 +271,7 @@ const Resolvers = {
           const {templateID, attrs = [], staticAttrs = []} = templates[0];
           const requestString = `/device?page_size=999&page_num=1&template=${templateID}`;
           const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
-          auxDevices = fetchedDv.devices.map(device => ({deviceID: device.id, attrs}));
+          auxDevices = fetchedDv.devices ? fetchedDv.devices.map(device => ({deviceID: device.id, attrs})) : [];
           if (operationType === operations.CSMAP) {
             fetchedDv.devices.forEach((device) => {
               device.attrs[templateID].forEach(attribute => {

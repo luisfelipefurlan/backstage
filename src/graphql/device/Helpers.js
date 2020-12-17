@@ -60,7 +60,6 @@ const formatValueType = (valType) => {
 }
 
 const parseGeo = value => {
-  console.log(value);
   const toParse = value ? value : '[0, 0]';
   const [lat, long] = toParse.split(',')
   return [parseFloat(lat), parseFloat(long)]
@@ -123,13 +122,27 @@ const devicesPromises = (devices, queryStringParams, optionsAxios) => {
             console.log(e.response.config.url)
             return new Promise((resolve, reject) => {
               const urlArray = e.response.config.url.split('/')
-              const q = querystring.parse(urlArray[6]);
-              console.log(urlArray[5]);
-              console.log(q.attr);
+              const q = querystring.parse(urlArray[6].replace('history?', ''));
               resolve([{attr: q.attr, value: 0, device_id: urlArray[5], ts: "0001-01-01T00:00:0Z", metadata: {}}]);
             });
           });
-      // .catch(() => Promise.resolve(null));
+        // .catch(() => Promise.resolve(null));
+        historyPromiseArray.push(promiseHistory);
+      });
+    }
+  });
+
+  return historyPromiseArray;
+}
+
+const devicesPromises = (devices, queryStringParams, optionsAxios) => {
+  const historyPromiseArray = []
+  devices.forEach((device) => {
+    if (device.attrs) {
+      device.attrs.forEach((attribute) => {
+        const requestString = `/history/device/${device.deviceID}/history?attr=${attribute}${queryStringParams ? `${queryStringParams}` : ''}`;
+        const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
+          .catch(() => Promise.resolve(null));
         historyPromiseArray.push(promiseHistory);
       });
     }

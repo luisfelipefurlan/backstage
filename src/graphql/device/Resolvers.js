@@ -16,6 +16,7 @@ const {
 
 const ttl = 60 * 60 * 1; //cache com duração de 1h
 const cache = new CacheService(ttl); // Cria uma instancia de cache
+const devicesCache = new CacheService(ttl); // Cria uma instancia de cache
 
 const paramsAxios = {
   token: null,
@@ -92,7 +93,8 @@ const Resolvers = {
           }
         });
 
-        const {data: fetchedData} = await axios(optionsAxios(UTIL.GET, requestString));
+        // const {data: fetchedData} = await axios(optionsAxios(UTIL.GET, requestString));
+        const {data: fetchedData} = await cache.get(requestString, () => axios(optionsAxios(UTIL.GET, requestString)));
         const devices = [];
 
         fetchedData.devices.forEach((device) => {

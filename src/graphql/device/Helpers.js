@@ -2,7 +2,7 @@ const _ = require('lodash');
 const LOG = require('../../utils/Log');
 const axios = require('axios');
 const UTIL = require('../utils/AxiosUtils');
-const querystring = require('querystring');
+const CacheService = require('../../utils/cache');
 
 const operations = {
   LAST: {
@@ -110,13 +110,17 @@ const formatOutPut = (attributes, operationType, staticAttributes) => {
   return {history, historyObj}
 };
 
+const deviceTtl = 60 * 10; //cache com duração de 10 minutos
+const attributeCache = new CacheService(deviceTtl); // Cria uma instancia de cache
+
 const devicesPromises = (devices, queryStringParams, optionsAxios) => {
   const historyPromiseArray = []
   devices.forEach((device) => {
     if (device.attrs) {
       device.attrs.forEach((attribute) => {
         const requestString = `/history/device/${device.deviceID}/history?attr=${attribute}${queryStringParams ? `${queryStringParams}` : ''}`;
-        const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
+        // const promiseHistory = axios(optionsAxios(UTIL.GET, requestString))
+        const promiseHistory = attributeCache.get(requestString, () => axios(optionsAxios(UTIL.GET, requestString)))
           .catch(() => Promise.resolve(null));
         historyPromiseArray.push(promiseHistory);
       });

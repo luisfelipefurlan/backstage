@@ -3,6 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const UTIL = require('../utils/AxiosUtils');
 const LOG = require('../../utils/Log');
+const CacheService = require('../../utils/cache');
 const {
   reduceList,
   convertList,
@@ -12,6 +13,9 @@ const {
   devicesPromises,
   operations
 } = require('./Helpers');
+
+const ttl = 60 * 60 * 1; //cache com duração de 1h
+const cache = new CacheService(ttl); // Cria uma instancia de cache
 
 const paramsAxios = {
   token: null,
@@ -270,13 +274,14 @@ const Resolvers = {
           // TODO: multiples templates
           const {templateID, attrs = [], staticAttrs = []} = templates[0];
           const requestString = `/device?page_size=999&page_num=1&template=${templateID}`;
-          const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
-          auxDevices = fetchedDv.devices ? fetchedDv.devices.map(device => ({deviceID: device.id, attrs})) : [];
+          // const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
+          const {data: fetchedDv} = await cache.get(requestString, () => axios(optionsAxios(UTIL.GET, requestString)));
+          auxDevices = fetchedDv.devices.map(device => ({deviceID: device.id, attrs}));
+          console.log(auxDevices.length);
           if (operationType === operations.CSMAP) {
             fetchedDv.devices.forEach((device) => {
               device.attrs[templateID].forEach(attribute => {
                 if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
-                  console.log(device);
                   auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label })
                 }
               })

@@ -40,5 +40,4 @@ class Cache {
   }
 }
 
-
-export default Cache;
+module.exports = Cache;

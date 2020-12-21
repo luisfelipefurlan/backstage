@@ -278,17 +278,14 @@ const Resolvers = {
           const requestString = `/device?page_size=999&page_num=1&template=${templateID}`;
           // const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
           const {data: fetchedDv} = await cache.get(requestString, () => axios(optionsAxios(UTIL.GET, requestString)));
-          auxDevices = fetchedDv.devices.map(device => ({deviceID: device.id, attrs}));
-          console.log(auxDevices.length);
-          if (operationType === operations.CSMAP) {
-            fetchedDv.devices.forEach((device) => {
-              device.attrs[templateID].forEach(attribute => {
-                if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
-                  auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label })
-                }
-              })
+          fetchedDv.devices.forEach((device) => {
+            auxDevices.push({deviceID: device.id, attrs})
+            device.attrs[templateID].forEach(attribute => {
+              if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
+                auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label})
+              }
             })
-          }
+          })
         } else {
           auxDevices = devices;
         }

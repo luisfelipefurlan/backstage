@@ -15,6 +15,7 @@ const operations = {
   MAP: 5,
   CSMAP: 6,
   TEMPLATES: 7,
+  LIST: 8,
 };
 
 const reduceList = (prop) => {
@@ -92,14 +93,33 @@ const formatOutPut = (attributes, operationType, staticAttributes) => {
         timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
       }
     } else if (operationType === operations.CSMAP) {
-      const value = _.find(staticAttributes, staticAttribute => {
+      const staticValue = _.find(staticAttributes, staticAttribute => {
         return staticAttribute.deviceID === device_id
       });
       historyObj[`${device_id}${attr}`] = {
-        value: parseGeo(value.static_value),
+        value: parseGeo(staticValue.static_value),
         timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
-        deviceLabel: value.deviceLabel,
+        deviceLabel: staticValue.deviceLabel,
       }
+    } else if (operationType === operations.LIST) {
+      let tmpObj = {};
+      if (typeof historyObj[device_id] === "object") {
+        tmpObj = historyObj[device_id];
+        tmpObj[attr] = value;
+      } else {
+        const values = _.filter(staticAttributes, staticAttribute => {
+          return staticAttribute.deviceID === device_id
+        });
+        tmpObj = {
+          [attr]: value,
+          timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
+          deviceLabel: value.deviceLabel,
+        };
+        values.forEach(item => {
+          tmpObj[item.label] = item.static_value
+        })
+      }
+      historyObj[device_id] = tmpObj
     } else {
       history.push({
         [`${device_id}${attr}`]: isNaN(value) ? value : parseFloat(value),

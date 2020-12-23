@@ -272,19 +272,20 @@ const Resolvers = {
 
       let auxDevices = [];
       try {
-        if (operationType === operations.TEMPLATES || operationType === operations.CSMAP) {
+        if (operationType === operations.TEMPLATES || operationType === operations.CSMAP || operationType === operations.LIST) {
           // TODO: multiples templates
           const {templateID, attrs = [], staticAttrs = []} = templates[0];
           const requestString = `/device?page_size=999&page_num=1&template=${templateID}`;
-          // const {data: fetchedDv} = await axios(optionsAxios(UTIL.GET, requestString));
           const {data: fetchedDv} = await cache.get(requestString, () => axios(optionsAxios(UTIL.GET, requestString)));
           fetchedDv.devices.forEach((device) => {
             auxDevices.push({deviceID: device.id, attrs})
-            device.attrs[templateID].forEach(attribute => {
-              if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
-                auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label})
-              }
-            })
+            for(const template in device.attrs) {
+              device.attrs[template].forEach(attribute => {
+                if (attribute.type === 'static' && staticAttrs.includes(attribute.label)) {
+                  auxStaticAttrs.push({...attribute, deviceID: device.id, deviceLabel: device.label})
+                }
+              })
+            }
           })
         } else {
           auxDevices = devices;
@@ -312,6 +313,10 @@ const Resolvers = {
       }
 
       if (operationType === operations.CSMAP) {
+        return JSON.stringify(historyObj);
+      }
+
+      if (operationType === operations.LIST) {
         return JSON.stringify(historyObj);
       }
 

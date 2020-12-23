@@ -113,10 +113,10 @@ const formatOutPut = (attributes, operationType, staticAttributes) => {
         tmpObj = {
           [attr]: value,
           timestamp: ts.length > 20 ? `${ts.substring(0, ts.length - (ts.length - 19))}Z` : ts,
-          deviceLabel: value.deviceLabel,
         };
         values.forEach(item => {
-          tmpObj[item.label] = item.static_value
+          tmpObj[item.label] = item.static_value;
+          tmpObj['deviceLabel'] = item.deviceLabel;
         })
       }
       historyObj[device_id] = tmpObj

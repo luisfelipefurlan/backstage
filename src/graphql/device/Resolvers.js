@@ -133,7 +133,7 @@ const Resolvers = {
       root,
       {
         filter: {
-          dateFrom = '', dateTo = '', lastN = '', operationType = 0, devices = [], templates = [],
+          dateFrom = '', dateTo = '', lastN = '1', operationType = 0, devices = [], templates = [],
         },
       },
       context,

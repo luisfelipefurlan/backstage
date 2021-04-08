@@ -118,13 +118,11 @@ const Resolvers = {
           });
         });
 
-        const deviceList = ({
+        return ({
           totalPages: fetchedData.pagination.total,
           currentPage: fetchedData.pagination.page,
           devices,
         });
-
-        return deviceList;
       } catch( error ) {
         LOG.error(error.stack || error);
         throw error;
@@ -133,19 +131,21 @@ const Resolvers = {
 
     async getDeviceHistoryForDashboard(
       root,
-      {
-        filter: { dateFrom = '', dateTo = '', lastN = '', devices = [], templates = [] },
-        configs: { sourceType = sources.DEVICE, operationType = operations.LAST.N }
-      },
+      props,
       context,
     ) {
       setToken(context.token);
+      const {
+        filter: { dateFrom = '', dateTo = '', lastN = '', devices = [], templates = [] },
+        configs: { sourceType = sources.DEVICE, operationType = operations.LAST.N }
+      } = props;
       let sortedHistory = [];
       let queryStringParams = '';
-      let dynamicAttrs;
+      let dynamicAttrs = [];
       let staticAttrs = [];
       let dojotDevices = {};
       let devicesFromTemplate = [];
+      let deviceDictionary = {};
 
       switch( operationType ) {
         case operations.MAP:
@@ -174,17 +174,19 @@ const Resolvers = {
           queryStringParams = `${ dateFrom && `&dateFrom=${ dateFrom }` }${ dateTo && `&dateTo=${ dateTo }` }`;
           break;
       }
-
       try {
         switch( sourceType ) {
           case sources.DEVICE:
             const devicesIds = devices.map(device => device.deviceID)
             dojotDevices = await getDevices(devicesIds, optionsAxios)
+            dynamicAttrs = await getHistory(devices, optionsAxios, queryStringParams)
             break;
           case sources.TEMPLATE:
-            const { values, devicesIDs } = await getDevicesByTemplate(templates, optionsAxios)
-            dojotDevices = values;
-            devicesFromTemplate = devicesIDs;
+            const ret = await getDevicesByTemplate(templates, optionsAxios)
+            dojotDevices = ret.values;
+            devicesFromTemplate = ret.devicesIDs;
+            deviceDictionary = ret.deviceDictionary;
+            dynamicAttrs = await getHistory(devicesFromTemplate, optionsAxios, queryStringParams)
             break;
           default:
             dojotDevices = {}
@@ -199,14 +201,12 @@ const Resolvers = {
             staticAttrs = getStaticAttributes(dojotDevices, devicesFromTemplate)
           }
         }
-
-        dynamicAttrs = await getHistory(devices, optionsAxios, queryStringParams)
       } catch( error ) {
         LOG.error(error.stack || error);
         throw error;
       }
 
-      const { history, historyObj } = formatOutPut(dynamicAttrs, staticAttrs, dojotDevices, operationType);
+      const { history, historyObj } = formatOutPut(dynamicAttrs, staticAttrs, dojotDevices, deviceDictionary, operationType);
 
       if( operationType === operations.MAP ) {
         return JSON.stringify(historyObj);

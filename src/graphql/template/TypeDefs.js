@@ -2,7 +2,7 @@ const TypeDefs = [`
   type Metadata {
      #Metadata ID
      id: Int
-     #Metadata Label 
+     #Metadata Label
      label: String
      #Meta Value
      static_value: String
@@ -15,7 +15,7 @@ const TypeDefs = [`
      #Timestamp of update date
      updated: String
   }
-  
+
   type Attributes {
     #Attribute ID
      id: Int
@@ -25,7 +25,7 @@ const TypeDefs = [`
      metadata: [Metadata]
      #Value when type is Static
      static_value: String
-     #Primary key of a template 
+     #Primary key of a template
      template_id: String
      #Can be static, dynamic, etc.
      type: String
@@ -34,7 +34,7 @@ const TypeDefs = [`
      #Timestamp of create date
      created: String
   }
-  
+
   type Template {
     #Template ID
     id: Int,
@@ -51,6 +51,18 @@ const TypeDefs = [`
     #Timestamp of create date
     created: String
   }
+
+   type TemplatesListPage {
+    totalPages: Int!
+    currentPage: Int!
+    templates: [TemplateList]
+ }
+
+ type TemplateList {
+    id: String!
+    label: String!
+    attrs: [Attr]
+ }
 `];
 
 module.exports = TypeDefs;

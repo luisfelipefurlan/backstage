@@ -16,13 +16,15 @@ const query = [`
       #Checks if templates has Image Firmware and return a array with objects key-value, where key is a id template and value is a boolean.
       #The value is true if the template has image firmware.
       templatesHasImageFirmware(templatesId: [Int]!): [MapStringToString]
+      #Returns a list of templates
+      getTemplates(page: PageInput): TemplatesListPage
       #Returns a list of devices that can be divided in pages, and the information about how many pages there are in total, along with which page is being shown.
       #@param sortBy: set sortBy to ordenate list (default 'label')
       getDevices(page: PageInput, filter: FilterDeviceInput, sortBy: String): DeviceListPage
       #Finds device information by id
       getDeviceById(deviceId: String!): Device
       #Returns historical data in the format used by the Dashboard
-      getDeviceHistoryForDashboard(filter: HistoryInput!): String
+      getDeviceHistoryForDashboard(filter: HistoryInput!, configs: ConfigsInput): String
       #Retrieves dashboard configuration by user. Returns the information if successful or error message if it occurs.
       getConfig(user:String, tenant:String!): String
     }

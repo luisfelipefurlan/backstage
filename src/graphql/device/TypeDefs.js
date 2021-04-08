@@ -46,10 +46,15 @@ type Device {
     templates: [HistoryTemplateInput]
     dateFrom: String
     dateTo: String
-    #operationType corresponds to 0 (the last N histories, Number of most current values), 1 (minutes, the last N minutes), 2 (hours, the last N hours), 3 (days, the last N days), 4 (months, the last N months), 7 (to get devices by template)
-    operationType: Int
     #lastN will be used to obtain the values from the lastN of most current values, minutes, hours, days and months according to option operationType
     lastN: Int
+ }
+
+ input ConfigsInput {
+    #operationType corresponds to 0 (the last N histories, Number of most current values), 1 (minutes, the last N minutes), 2 (hours, the last N hours), 3 (days, the last N days), 4 (months, the last N months), 7 (to get devices by template)
+    operationType: Int
+    #corresponds to 0 (DEVICE) and 1 (TEMPLATE)
+    sourceType: Int
  }
 
  #Parameters to identify from which device and which attributes to retrieve historical data from#

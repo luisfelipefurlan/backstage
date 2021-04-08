@@ -229,6 +229,9 @@ const devicesFromTemplateData = {
         templates: [3]
       }
     ]
+  },
+  config: {
+    url: "/device/template/3"
   }
 };
 const historyData = {
@@ -806,11 +809,12 @@ it('Template - should get the coordinates from three devices', async () => {
   const params = {
     filter: {
       templates: [{ templateID: '3', dynamicAttrs: [], staticAttrs: ['location'] }],
+      devices: [],
       lastN: 1
     },
     configs: { sourceType: 1, operationType: 8 }
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
-  expect(result).toEqual('{"44h7fflocation":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca C"},"90bc2alocation":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca A"},"ca19f8location":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca B"}}')
+  expect(result).toEqual('{"44h7fflocation":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca C","templateKey":"3location"},"90bc2alocation":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca A","templateKey":"3location"},"ca19f8location":{"value":[-22.902639983447763,-47.059749301405674],"timestamp":"2020-09-18T14:20:20.248Z","deviceLabel":"GPS - Marca B","templateKey":"3location"}}')
 });

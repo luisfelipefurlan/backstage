@@ -12,8 +12,9 @@ const {
   getHistory,
   getStaticAttributes,
   getDevicesByTemplate,
-  operations,
-  sources
+  OPERATION,
+  SOURCE,
+  WIDGET_TYPE
 } = require('./Helpers');
 
 const paramsAxios = {
@@ -136,8 +137,8 @@ const Resolvers = {
     ) {
       setToken(context.token);
       const {
-        filter: { dateFrom = '', dateTo = '', lastN = '', devices = [], templates = [] },
-        configs: { sourceType = sources.DEVICE, operationType = operations.LAST.N }
+        filter: { dateFrom = '', dateTo = '', lastN = '1', devices = [], templates = [] },
+        configs: { sourceType = SOURCE.DEVICE, operationType = OPERATION.LAST.N, widgetType = WIDGET_TYPE.DEFAULT }
       } = props;
       let sortedHistory = [];
       let queryStringParams = '';
@@ -148,24 +149,23 @@ const Resolvers = {
       let deviceDictionary = {};
 
       switch( operationType ) {
-        case operations.MAP:
-        case operations.LAST.N:
+        case OPERATION.LAST.N:
           // To get the latest N records
           queryStringParams += `${ lastN && `&lastN=${ lastN }` }`;
           break;
-        case operations.LAST.MINUTES:
+        case OPERATION.LAST.MINUTES:
           // To get the data for the last minutes
           queryStringParams += `&dateFrom=${ moment().subtract(lastN, 'minute').toISOString() }`;
           break;
-        case operations.LAST.HOURS:
+        case OPERATION.LAST.HOURS:
           // To get the data for the last hours
           queryStringParams += `&dateFrom=${ moment().subtract(lastN, 'hour').toISOString() }`;
           break;
-        case operations.LAST.DAYS:
+        case OPERATION.LAST.DAYS:
           // To get the data for the last days
           queryStringParams += `&dateFrom=${ moment().subtract(lastN, 'days').toISOString() }`;
           break;
-        case operations.LAST.MOUTHS:
+        case OPERATION.LAST.MOUTHS:
           // To get the data for the last months
           queryStringParams += `&dateFrom=${ moment().subtract(lastN, 'month').toISOString() }`;
           break;
@@ -176,12 +176,12 @@ const Resolvers = {
       }
       try {
         switch( sourceType ) {
-          case sources.DEVICE:
+          case SOURCE.DEVICE:
             const devicesIds = devices.map(device => device.deviceID)
             dojotDevices = await getDevices(devicesIds, optionsAxios)
             dynamicAttrs = await getHistory(devices, optionsAxios, queryStringParams)
             break;
-          case sources.TEMPLATE:
+          case SOURCE.TEMPLATE:
             const ret = await getDevicesByTemplate(templates, optionsAxios)
             dojotDevices = ret.values;
             devicesFromTemplate = ret.devicesIDs;
@@ -193,11 +193,11 @@ const Resolvers = {
             break;
         }
 
-        if( operationType === operations.MAP ) {
-          if( sourceType === sources.DEVICE ) {
+        if( widgetType === WIDGET_TYPE.MAP || widgetType === WIDGET_TYPE.TABLE ) {
+          if( sourceType === SOURCE.DEVICE ) {
             staticAttrs = getStaticAttributes(dojotDevices, devices)
           }
-          if( sourceType === sources.TEMPLATE ) {
+          if( sourceType === SOURCE.TEMPLATE ) {
             staticAttrs = getStaticAttributes(dojotDevices, devicesFromTemplate)
           }
         }
@@ -206,9 +206,9 @@ const Resolvers = {
         throw error;
       }
 
-      const { history, historyObj } = formatOutPut(dynamicAttrs, staticAttrs, dojotDevices, deviceDictionary, operationType);
+      const { history, historyObj } = formatOutPut(dynamicAttrs, staticAttrs, dojotDevices, deviceDictionary, sourceType, widgetType);
 
-      if( operationType === operations.MAP ) {
+      if( widgetType === WIDGET_TYPE.MAP ) {
         return JSON.stringify(historyObj);
       }
 

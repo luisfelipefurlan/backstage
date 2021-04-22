@@ -55,6 +55,8 @@ type Device {
     operationType: Int
     #corresponds to 0 (DEVICE) and 1 (TEMPLATE)
     sourceType: Int
+    #corresponds to 0 (DEFAULT), 1 (MAP) and 2 (TABLE)
+    widgetType: Int
  }
 
  #Parameters to identify from which device and which attributes to retrieve historical data from#

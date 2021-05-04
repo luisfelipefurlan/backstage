@@ -1,20 +1,19 @@
 name: Backstage
 
-# Triggered after a branch is created, a tag or a branch is pushed or a PR
+# trigger when create a branch, push a tag or a branch, PR
 on:
   create:
   push:
   pull_request:
 
 jobs:
-  npm-build:
-    name: npm Build
-    # If the commit message contains 'ci skip', it is not necessary to run this job
+  unit-tests:
+    name: Unit Tests
     if: contains(github.event.head_commit.message, 'ci skip') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x]
+        node-version: [12.x]
     steps:
 
     - name: checkout
@@ -25,26 +24,25 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: npm install, build, test and check licenses
+    - name: npm install, build, and test
       run: |
-        npm install
+        npm ci
         npm run build --if-present
-        npm test
+        npm run lint
         npm run check-licenses
-
+        npm run test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
-        file: coverage/lcov.info # Created when 'npm test' is executed
-        flags: Backstage # Flags allow you to isolate coverage reports for different tests
-        name: backstage # Custom name for the upload
+        directory: /
+        flags: backstage
+        name: backstage
 
   docker-hub:
-    needs: npm-build
-    name: Build and Publish image to DockerHUb
+    needs: unit-tests
+    name: Build and Publish image to DockerHub
     runs-on: ubuntu-latest
-    # If this is a PR, it won't run
-    if: contains(github.ref, 'refs/pull/') == false
+    if: contains(github.ref, 'refs/pull/') == false # if this a PR doesn't run
     steps:
 
     - name: Owner Repository
@@ -53,7 +51,6 @@ jobs:
         export OWNER=$(echo ${{ github.repository }} | cut -f1 -d"/")
         echo Current Owner is $OWNER
         echo ::set-output name=owner::$OWNER
-
     - name: Checkout
       uses: actions/checkout@v1
 
@@ -63,8 +60,88 @@ jobs:
         name: ${{ steps.get_owner.outputs.owner }}/backstage
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        dockerfile: DockerFile
-        # Label with the built image's commit
-        buildoptions: " --label commit_sha_dojot=${{ github.sha }} "
-        # Whether tag will be based in the branch name or in the tag name
-        tag_names: true
+        buildoptions: ' --label commit_sha_dojot=${{ github.sha }} '  # label with commit that built image
+        tag_names: true # tag will be based in branch name or tag name
+
+  gh-pages-swagger:
+    needs: unit-tests
+    name: Generate swagger documentation and Publish in gh-pages
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/pull/') == false # if this a PR doesn't run
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Version Doc
+        id: version_doc
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          export TAG_VERSION=$(sh .github/workflows/scripts/translate_docker_tag.sh)
+          echo Documentation Version $TAG_VERSION
+          echo ::set-output name=version::$TAG_VERSION
+      - name: Generate docs
+        env:
+          PATH_SWAGGER_YML: ./api/v1.yml
+          VERSION_NAME: ${{ steps.version_doc.outputs.version }}
+        run: |
+          sh .github/workflows/scripts/swagger.sh
+
+      - name: Publish Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./swagger-docs
+          destination_dir: api
+          keep_files: true
+          allow_empty_commit: false
+
+  gh-pages-graphql:
+    needs: unit-tests
+    name: Generate graphql documentation and Publish in gh-pages
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/pull/') == false # if this a PR doesn't run
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Version Doc
+        id: version_doc
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          export TAG_VERSION=$(sh .github/workflows/scripts/translate_docker_tag.sh)
+          echo Documentation Version $TAG_VERSION
+          echo ::set-output name=version::$TAG_VERSION
+
+      - name: Generate docs
+        env:
+          VERSION_NAME: ${{ steps.version_doc.outputs.version }}
+        run: |
+          npm install
+          mkdir -p backstage-docs-temp
+          cd backstage-docs-temp
+          npm install -g @2fd/graphdoc
+          node ../docs/GenerateFileSchema.js
+          graphdoc -s ../docs/schemaDoc.graphql -o ./${VERSION_NAME} -f
+
+      - name: Publish Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./backstage-docs-temp
+          destination_dir: graphql
+          keep_files: true
+          allow_empty_commit: false

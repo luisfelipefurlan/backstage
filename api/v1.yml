@@ -1,0 +1,426 @@
+---
+openapi: 3.0.1
+info:
+  title: Backstage - Backend for frontend - Dojot
+  description: ''
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 2.0.0
+externalDocs:
+  description: Find out more about Dojot
+  url: https://dojotdocs.readthedocs.io/
+servers:
+- url: "{url}"
+  description: URL for dojot
+  variables:
+    url:
+      default: 'http://localhost:8000/'
+tags:
+  - name: auth
+    description: Keycloak authentication and session information
+  - name: graphql
+    description: GraphQL (required authentication process)
+  - name: proxy
+    description: |
+      Proxy for calls to Dojot via Api Gateway (required authentication process) -
+paths:
+  /backstage/v1/auth:
+   get:
+      tags:
+        - auth
+      summary: "Authenticate"
+      description: |
+        Create session cookie, generate PKCE, and redirect to the Keycloak login screen using the OAuth2/OIDC protocols
+      operationId: Authenticate
+      parameters:
+        - name: tenant
+          in: query
+          description: |
+             Tenant (In the keycloak it is referred to as Realm)
+          required: true
+          allowReserved: true
+          schema:
+            type: string
+          examples:
+            admin:
+              summary: admin
+              value: "admin"
+        - name: state
+          in: query
+          description: |
+             Used to maintain the state between the request and return.
+          required: false
+          allowReserved: true
+          schema:
+            type: string
+            default: login-state
+
+      responses:
+        "303":
+          description: Redirect to the Keycloak login screen using the OAuth2/OIDC protocols
+          headers:
+            Location:
+              schema:
+                type: string
+                description: Url to the keycloak login screen
+                example: <base-url>/realms/<tenant>/protocol/openid-connect/auth?client_id=gui&redirect_uri=<base-url>%2Fbackstage%2Fv1%2Fauth%2Freturn&state=<state>&response_type=code&scope=openid"&code_challenge=<code-challenge>&code_challenge_method=<code-challenge-method>
+            Set-Cookie:
+              schema:
+                type: string
+                example: connect.sid=abcde12345; Path=/;  HttpOnly;SameSite=Strict
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Unexpected error
+  /backstage/v1/auth/return:
+   get:
+      tags:
+        - auth
+      summary: "Authenticate Return"
+      description: |
+        Called when there is success in the login screen, this endpoint is passed as `redirect_uri` when redirecting to the keycloak login screen and if the login happens correctly the keycloak calls this endpoint. The OAuth2/OIDC protocols are used.
+      operationId: AuthenticateReturn
+      parameters:
+        - name: code
+          in: query
+          description: |
+             Authorization Code
+          required: true
+          allowReserved: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: |
+             Used to maintain the state between the request and return.
+             This value is passed as `state` when redirecting to the keycloak login
+          required: true
+          allowReserved: true
+          schema:
+            type: string
+        - name: session_state
+          in: query
+          description: |
+             Internal value
+          required: false
+          allowReserved: true
+          schema:
+            type: string
+      responses:
+        "303":
+          description: Redirects to the url configured in `gui.return.url`. If the process has been successful, the `state` parameter is passed by the query string, but if there is an error, a `error` parameter is passed by the query string.
+          headers:
+            Location:
+              schema:
+                type: string
+                example: <gui-return-url>?state=<state>&error=<error-message-if-there-is-an-error>
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Unexpected error
+  /backstage/v1/auth/user-info:
+   get:
+      tags:
+        - auth
+      summary: "User information"
+      description: |
+        Returns information from the active session user such as name, email, tenant (realm) and the permissions associated with that user using OIDC protocol.
+      operationId: userInfo
+      responses:
+        "200":
+          description: Informations from user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  emailVerified:
+                    type: boolean
+                  tenant:
+                    description: the same as Realm
+                    type: string
+                  permissions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        resourceName:
+                          type: string
+                        scopes:
+                          type: array
+                          items:
+                            type: string
+                            enum: [view, create, update, delete]
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Unexpected error
+  /backstage/v1/auth/revoke:
+    get:
+      tags:
+        - auth
+      summary: "Revoke"
+      description: |
+        Revoke the active user session using OAuth2/OIDC protocols and redirects to the keycloak logout url if there is an active session and that keycloak url redirects to `gui.home.url` or redirects directly to`gui.home.url` with an `error` query string.
+      operationId: revoke
+      responses:
+        "303":
+          description: Redirects to the keycloak logout url or redirects directly to `gui.home.url` with an `error`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: <base-url>/realms/<tenant>/protocol/openid-connect/logout?redirect_uri=<gui.home.url> || <gui.home.url>?error=<error-message-if-there-is-an-error>
+        default:
+          description: Unexpected error
+  /backstage/v1/graphql:
+    post:
+      tags:
+        - graphql
+      summary: "graphql"
+      description: |
+        This endpoint is to be used with graphql it is necessary to have created a cookie for the session using /auth endpoint.
+      operationId: graphqlPost
+      x-allow-unknown-query-parameters: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Unexpected error
+    get:
+      tags:
+        - graphql
+      summary: "graphql"
+      description: |
+        This endpoint is to be used with graphql, if graphiql (graphql graphical interface) is active, it is possible to access this endpoint via get via the browser and it is necessary to have created a cookie for the session using /auth endpoint and enable `graphql.graphiql`. And there it will be possible to access the documentation of queries and mutations available for graphql.
+      operationId: graphqlGet
+      x-allow-unknown-query-parameters: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Unexpected error
+
+  /backstage/v1/proxy/{path*}:
+    post:
+      tags:
+        - proxy
+      summary: "Proxy POST"
+      description: |
+        This endpoint is a proxy for internal calls to dojot via api gateway (kong). It adds `Authorization: 'Bearer TOKEN'` to the request header based on the current session.
+        It is necessary to have created a cookie for the session using `/auth` endpoint.
+        For example, calling `http://localhost:8000/backstage/v1/proxy/device` internally will be called `http://apigw:8000/device`.
+      operationId: proxyPost
+      x-allow-unknown-query-parameters: true
+      parameters:
+        - $ref: "#/components/parameters/path"
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+        default:
+          description: Look at the API documentation of the endpoints being requested
+    get:
+      tags:
+        - proxy
+      summary: "Proxy GET"
+      description: |
+        This endpoint is a proxy for internal calls to dojot via api gateway (kong). It adds `Authorization: 'Bearer TOKEN'` to the request header based on the current session.
+        It is necessary to have created a cookie for the session using `/auth` endpoint.
+        For example, calling `http://localhost:8000/backstage/v1/proxy/device` internally will be called `http://apigw:8000/device`.
+      operationId: proxyGet
+      x-allow-unknown-query-parameters: true
+      parameters:
+        - $ref: "#/components/parameters/path"
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+        default:
+          description: Look at the API documentation of the endpoints being requested
+    put:
+      tags:
+        - proxy
+      summary: "Proxy PUT"
+      description: |
+        This endpoint is a proxy for internal calls to dojot via api gateway (kong). It adds `Authorization: 'Bearer TOKEN'` to the request header based on the current session.
+        It is necessary to have created a cookie for the session using `/auth` endpoint.
+        For example, calling `http://localhost:8000/backstage/v1/proxy/device` internally will be called `http://apigw:8000/device`.
+      operationId: proxyPut
+      x-allow-unknown-query-parameters: true
+      parameters:
+        - $ref: "#/components/parameters/path"
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+        default:
+          description: Look at the API documentation of the endpoints being requested
+
+    patch:
+      tags:
+        - proxy
+      summary: "Proxy PATCH"
+      description: |
+        This endpoint is a proxy for internal calls to dojot via api gateway (kong). It adds `Authorization: 'Bearer TOKEN'` to the request header based on the current session.
+        It is necessary to have created a cookie for the session using `/auth` endpoint.
+        For example, calling `http://localhost:8000/backstage/v1/proxy/device` internally will be called `http://apigw:8000/device`.
+      operationId: proxyPatch
+      x-allow-unknown-query-parameters: true
+      parameters:
+        - $ref: "#/components/parameters/path"
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+        default:
+          description: Look at the API documentation of the endpoints being requested
+
+    delete:
+      tags:
+        - proxy
+      summary: "Proxy DELETE"
+      description: |
+        This endpoint is a proxy for internal calls to dojot via api gateway (kong). It adds `Authorization: 'Bearer TOKEN'` to the request header based on the current session.
+        It is necessary to have created a cookie for the session using `/auth` endpoint.
+        For example, calling `http://localhost:8000/backstage/v1/proxy/device` internall will be called `http://apigw:8000/device`.
+      operationId: proxyDelete
+      x-allow-unknown-query-parameters: true
+      parameters:
+        - $ref: "#/components/parameters/path"
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        default:
+          description: Look at the API documentation of the endpoints being requested
+
+components:
+  parameters:
+    path:
+      name: path
+      in: path
+      description: Path to desired URL
+      required: true
+      examples:
+        devices-template:
+          summary: Endpoint - Devices in template with id 1
+          value: "/device/template/1"
+      schema:
+        type: string

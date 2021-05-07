@@ -224,8 +224,7 @@ convention.
 | --- | ------- | ------------- | ------------ | --------------------
 | session.secret | This is the secret used to sign the session ID cookie.  **NOTE: Should be unique for each environment and always configured** | none | string  | BS_SESSION_SECRET
 | session.cookie.name | The name of the session ID cookie to set in the response (and read from in the request) | dojot-backstage-cookie | string  | BS_SESSION_COOKIE_NAME
-| session.cookie.https | True is a recommended option. However, it requires an https-enabled website, i.e., HTTPS is necessary for secure cookies. If secure is set, and you access your site over HTTP, the cookie will not be set. If you have your node.js behind a proxy and are using secure: true, you need to set "trust proxy" in express
- | true | boolean  | BS_SESSION_COOKIE_HTTPS
+| session.cookie.https | True is a recommended option. However, it requires an https-enabled website, i.e., HTTPS is necessary for secure cookies. If secure is set, and you access your site over HTTP, the cookie will not be set. If you have your node.js behind a proxy and are using secure: true, you need to set "trust proxy" in express | true | boolean  | BS_SESSION_COOKIE_HTTPS
 | session.cookie.path | Specifies the value for the Path Set-Cookie. By default, this is set to '/', which is the root path of the domain. | / | string  | BS_SESSION_COOKIE_PATH
 | session.proxy  | Trust the reverse proxy when setting secure cookies (via the "X-Forwarded-Proto" header). |true | boolean  | BS_SESSION_PROXY
 | session.domain | The domain where the cookie will be used.  Specifies the value for the Domain Set-Cookie attribute.  |localhost | string  | BS_SESSION_DOMAIN

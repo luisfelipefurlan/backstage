@@ -60,8 +60,8 @@ The services dependencies are listed in the next topics.
 
 The link to the API documentation for the available endpoints:
 
-- [Latest Backstage Retriever API documentation](https://dojot.github.io/backstage/api/doc.html)
-- [Development Backstage Retriever API documentation](https://dojot.github.io/backstage/api/doc.html?version=development)
+- [Latest Backstage API documentation](https://dojot.github.io/backstage/api/doc.html)
+- [Development Backstage API documentation](https://dojot.github.io/backstage/api/doc.html?version=development)
 
 In addition, there is an endpoint for using version 1 documentation (the only one so far) interactively. The url to use it follows this pattern:
 
@@ -319,8 +319,8 @@ __NOTE THAT__ you can use the official image provided by dojot in its  [DockerHu
 
 Check the documentation for more information:
 
-- [Latest Backstage Retriever API documentation](https://dojot.github.io/backstage/api/doc.html)
-- [Development Backstage Retriever API documentation](https://dojot.github.io/backstage/api/doc.html?version=development)
+- [Latest Backstage API documentation](https://dojot.github.io/backstage/api/doc.html)
+- [Development Backstage API documentation](https://dojot.github.io/backstage/api/doc.html?version=development)
 - [Latest GraphQL API documentation](https://dojot.github.io/backstage/graphql/latest)
 - [Development GraphQL API documentation](https://dojot.github.io/backstage/graphql/development)
 - [Latest dojot platform documentation](https://dojotdocs.readthedocs.io/en/latest)

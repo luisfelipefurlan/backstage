@@ -152,7 +152,8 @@ export default function ReturnLogin(props) {
   }
 
   const handleLogout  = async (evt) => {
-    window.location.href = Config.LOGOUT_URL;
+    const returnPath = '/';
+    window.location.href = Config.LOGOUT_URL+'?return='+returnPath;
   }
 
   return (

@@ -1,16 +1,23 @@
 const { Logger, ConfigManager: { getConfig } } = require('@dojot/microservice-sdk');
+const createError = require('http-errors');
 const { generatePKCEChallenge } = require('../../../Utils');
 
 const {
-  gui: configGui,
   app: configApp,
 } = getConfig('BS');
 
 const BASE_URL = configApp['base.url'];
-const GUI_RETURN_URL = configGui['return.url'];
-const GUI_HOME_URL = configGui['home.url'];
 
 const logger = new Logger('backstage:express/routes/v1/Auth');
+
+const buildReturnPath = (returnPath) => {
+  let newReturnPath = returnPath || '/';
+
+  // if not starting with /, additional
+  if (newReturnPath.charAt(0) !== '/') newReturnPath = `/${newReturnPath}`;
+
+  return newReturnPath;
+};
 
 /**
  * Routes to Auth
@@ -36,8 +43,9 @@ module.exports = ({ mountPoint, keycloak }) => {
             logger.debug('auth-route.get: req.sessionID=', req.sessionID);
 
             try {
-              const { tenant: realm, state } = req.query;
+              const { tenant: realm, state, return: returnPath } = req.query;
               const newState = state ? 'login-state' : state;
+              const newReturnPath = buildReturnPath(returnPath);
 
               const { codeVerifier, codeChallenge } = generatePKCEChallenge();
 
@@ -52,6 +60,7 @@ module.exports = ({ mountPoint, keycloak }) => {
               req.session.codeVerifier = codeVerifier;
               req.session.realm = realm;
               req.session.tenant = realm;
+              req.session.returnPath = newReturnPath;
 
               logger.debug(`auth-route.get: redirect to ${url}`);
 
@@ -85,18 +94,20 @@ module.exports = ({ mountPoint, keycloak }) => {
             logger.debug('auth-return-route.get: req.query=', req.query);
             logger.debug('auth-return-route.get: req.sessionID=', req.sessionID);
 
-            const url = new URL(GUI_RETURN_URL);
-
             const {
               realm,
               codeVerifier,
+              returnPath,
             } = req.session;
 
-            if (codeVerifier) {
+            if (realm && codeVerifier && returnPath) {
               const {
                 state,
                 code: authorizationCode,
               } = req.query;
+
+              const redirectUrl = `${BASE_URL}${returnPath}`;
+              const url = new URL(redirectUrl);
 
               try {
                 const {
@@ -118,7 +129,7 @@ module.exports = ({ mountPoint, keycloak }) => {
 
                 url.searchParams.append('state', state);
 
-                logger.debug(`auth-return-route.get: redirect to ${GUI_RETURN_URL} with state=${state}`);
+                logger.debug(`auth-return-route.get: redirect to ${redirectUrl} with state=${state}`);
                 return res.redirect(303, url.href);
               } catch (e) {
                 req.session.destroy((err) => {
@@ -127,14 +138,13 @@ module.exports = ({ mountPoint, keycloak }) => {
 
                 url.searchParams.append('error', e.message);
 
-                logger.debug(`auth-return-route.get: redirect to ${GUI_RETURN_URL} with e=${e}`);
+                logger.debug(`auth-return-route.get: redirect to ${redirectUrl} with e=${e}`);
                 return res.redirect(303, url.href);
               }
             } else {
-              const e = 'There is no active session';
-              url.searchParams.append('error', e);
-              logger.debug(`auth-return-route.get: redirect to ${GUI_RETURN_URL} with e=${e}`);
-              return res.redirect(303, url.href);
+              const err = new createError.Unauthorized();
+              err.message = 'There is no valid session.';
+              throw err;
             }
           },
         ],
@@ -170,6 +180,7 @@ module.exports = ({ mountPoint, keycloak }) => {
                   permissions: permissionsArr,
                   ...userInfoObj,
                 };
+
                 logger.debug(`auth-user-info-route.get: result=${JSON.stringify(result)}`);
                 res.status(200).json(result);
               }
@@ -186,8 +197,7 @@ module.exports = ({ mountPoint, keycloak }) => {
   /**
    * Revoke the active user session using OAuth2/OIDC protocols and redirects to
    * the keycloak logout url if there is an active session and
-   * that keycloak url redirects to `gui.home.url` or redirects directly
-   * to` gui.home.url` with an error query string.
+   * that keycloak url redirects to `return` with an error query string if there is an error.
    */
   const authRevoke = {
     mountPoint,
@@ -199,23 +209,29 @@ module.exports = ({ mountPoint, keycloak }) => {
         middleware: [
           async (req, res) => {
             logger.debug(`auth-user-logout-route.get: req.sessionID=${JSON.stringify(req.sessionID)}`);
+            logger.debug('auth-user-logout-route.get: req.query=', req.query);
+
+            const { return: returnPath } = req.query;
+            const newReturnPath = buildReturnPath(returnPath);
 
             try {
+              const redirectUrl = `${BASE_URL}${newReturnPath}`;
+
               if (req.session && req.session.realm) {
                 const { realm } = req.session;
                 req.session.destroy((err) => {
                   if (err) { logger.warn(`auth-user-logout-route.get: session-destroy-error:=${JSON.stringify(err)}`); }
                 });
 
-                const url = keycloak.buildUrlLogout(realm, GUI_HOME_URL);
+                const url = keycloak.buildUrlLogout(realm, redirectUrl);
                 logger.debug(`auth-user-logout-route.get: redirect to ${url}`);
                 return res.redirect(303, url);
               }
-              const url = new URL(GUI_HOME_URL);
+              const url = new URL(redirectUrl);
               const e = 'There is no active session';
 
               url.searchParams.append('error', e);
-              logger.debug(`auth-user-logout-route.get: redirect to ${GUI_HOME_URL} with error=${e}`);
+              logger.debug(`auth-user-logout-route.get: redirect to ${redirectUrl} with error=${e}`);
               return res.redirect(303, url.href);
             } catch (e) {
               logger.error('auth-user-logout-route.get:', e);

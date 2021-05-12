@@ -4,7 +4,7 @@ services:
 
   # Prepare database, Bootstrap the database
   kong-migrations:
-    image: mprevide/kong:add_kong #TODO upgrade to dojot kong at dojot dockerhub
+    image: dojot/kong:feature-api-gateway-kong
     command: kong migrations bootstrap
     depends_on:
       postgres:
@@ -25,7 +25,7 @@ services:
 
   # Run any new migrations and Finish running any pending migrations after 'up'.
   kong-migrations-up:
-    image: mprevide/kong:add_kong #TODO upgrade to dojot kong at dojot dockerhub
+    image: dojot/kong:feature-api-gateway-kong
     command: kong migrations up && kong migrations finish
     depends_on:
       postgres:
@@ -45,7 +45,7 @@ services:
         max-file: '5'
 
   apigw:
-    image: mprevide/kong:add_kong #TODO upgrade to dojot kong at dojot dockerhub
+    image: dojot/kong:feature-api-gateway-kong
     depends_on:
       postgres:
         condition: service_healthy
@@ -214,10 +214,7 @@ services:
       # The BS_SESSION_SECRET should be unique for each environment
       BS_SESSION_SECRET: j0yYsBdc4p+PPq6ArjshcPdz0HA6W
       BS_SESSION_COOKIE_HTTPS: 'false'
-      # TODO: improve, so there is no need to pass urls or once only the domain and if it is http or https
       BS_APP_BASE_URL: 'http://localhost:8000' # The URL where this service will be available
-      BS_GUI_RETURN_URL: 'http://localhost:8000/return' # URL available via browser to receive the response when the login process is complete.
-      BS_GUI_HOME_URL: 'http://localhost:8000' # Initial GUI URL, URL available via browser.
       BS_KEYCLOAK_URL_EXTERNAL: 'http://localhost:8000/auth' #URL for external access
       BS_SESSION_DOMAIN: localhost # The domain where the cookie will be used.
       BS_GRAPHQL_GRAPHIQL: 'true' # If true, presents GraphiQL when the GraphQL endpoint is loaded in a browser.

@@ -4,10 +4,6 @@ const mockConfig = {
     'base.url': 'http://localhost:8000',
     'internal.base.url': 'http://apigw:8000',
   },
-  gui: {
-    'return.url': 'http://localhost:8000/return',
-    'home.url': 'http://localhost:8000',
-  },
 };
 
 const mockSdk = {

@@ -23,7 +23,7 @@ module.exports = ({ mountPoint }) => ({
     },
     graphqlHTTP({
       schema: rootSchema,
-      graphiql: configGraphql ? { headerEditorEnabled: true } : false,
+      graphiql: configGraphql.graphiql ? { headerEditorEnabled: true } : false,
       customFormatErrorFn: (error) => ({
         message: error.message,
         locations: error.locations,

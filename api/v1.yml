@@ -55,6 +55,15 @@ paths:
           schema:
             type: string
             default: login-state
+        - name: return
+          in: query
+          description: |
+             Path that will be redirected
+          required: false
+          allowReserved: true
+          schema:
+            type: string
+            default: /
 
       responses:
         "303":
@@ -116,12 +125,12 @@ paths:
             type: string
       responses:
         "303":
-          description: Redirects to the url configured in `gui.return.url`. If the process has been successful, the `state` parameter is passed by the query string, but if there is an error, a `error` parameter is passed by the query string.
+          description: Redirects to the url `<app.base.url><return>`. If the process has been successful, the `state` parameter is passed by the query string, but if there is an error, a `error` parameter is passed by the query string.
           headers:
             Location:
               schema:
                 type: string
-                example: <gui-return-url>?state=<state>&error=<error-message-if-there-is-an-error>
+                example: <app.base.url><return>?state=<state> || <app.base.url><return>?error=<error-message-if-there-is-an-error>
         "400":
           description: Bad Request
           content:
@@ -188,17 +197,27 @@ paths:
       tags:
         - auth
       summary: "Revoke"
+      parameters:
+        - name: return
+          in: query
+          description: |
+             Path that will be redirected
+          required: false
+          allowReserved: true
+          schema:
+            type: string
+            default: /
       description: |
-        Revoke the active user session using OAuth2/OIDC protocols and redirects to the keycloak logout url if there is an active session and that keycloak url redirects to `gui.home.url` or redirects directly to`gui.home.url` with an `error` query string.
+        Revoke the active user session using OAuth2/OIDC protocols and redirects to the keycloak logout url if there is an active session and that keycloak url redirects to `<app.base.url><return>` with an `error` in query string if it exists.
       operationId: revoke
       responses:
         "303":
-          description: Redirects to the keycloak logout url or redirects directly to `gui.home.url` with an `error`
+          description: Redirects to the keycloak logout url or redirects directly to `<app.base.url><return>` with an `error` if it exists
           headers:
             Location:
               schema:
                 type: string
-                example: <base-url>/realms/<tenant>/protocol/openid-connect/logout?redirect_uri=<gui.home.url> || <gui.home.url>?error=<error-message-if-there-is-an-error>
+                example: <base-url>/realms/<tenant>/protocol/openid-connect/logout?redirect_uri=<app.base.url><return> || <app.base.url><return>?error=<error-message-if-there-is-an-error>
         default:
           description: Unexpected error
   /backstage/v1/graphql:

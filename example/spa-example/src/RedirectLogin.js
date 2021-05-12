@@ -10,8 +10,10 @@ export default function RedirectLogin() {
   // with what page the user was on for example.
   const state = 'login-gui-state';
 
+  const returnPath = '/return';
+
   const handleRedirectLogin = async (evt) => {
-    window.location.href = Config.LOGIN_URL+'?tenant='+tenant+'&state='+state;
+    window.location.href = Config.LOGIN_URL+'?tenant='+tenant+'&state='+state+'&return='+returnPath;
   }
 
   return (

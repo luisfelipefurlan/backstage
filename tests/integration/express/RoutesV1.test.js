@@ -17,10 +17,6 @@ const mockConfig = {
     'base.url': 'http://localhost:8000',
     'internal.base.url': 'http://apigw:8000',
   },
-  gui: {
-    'return.url': 'http://localhost:8000/return',
-    'home.url': 'http://localhost:8000',
-  },
   proxy: {
     target: 'http://127.0.0.1:34059',
     'log.level': 'debug',
@@ -127,6 +123,7 @@ const sessionMockIncomplete = {
   ...sessionBaseObj,
   realm: 'realm',
   codeVerifier: 'codeVerifier',
+  returnPath: '/',
 };
 
 const sessionMockComplete = {
@@ -158,7 +155,7 @@ describe('RoutesV1', () => {
 
   test('/backstage/v1/auth: ok', (done) => {
     api
-      .get('/backstage/v1/auth?tenant=admin')
+      .get('/backstage/v1/auth?tenant=admin&return=/')
       .then((res) => {
         expect(res.statusCode).toBe(303);
         expect(res.redirect).toBe(true);
@@ -182,7 +179,7 @@ describe('RoutesV1', () => {
   test('/backstage/v1/auth: unexpected error', (done) => {
     mockBuildUrlLogin.mockImplementationOnce(new Error());
     api
-      .get('/backstage/v1/auth?tenant=admin')
+      .get('/backstage/v1/auth?tenant=admin&return=/')
       .then((res) => {
         expect(res.statusCode).toBe(500);
         expect(res.body).toStrictEqual({ error: 'An unexpected error has occurred.' });
@@ -194,7 +191,7 @@ describe('RoutesV1', () => {
     mockRedisSet.mockRejectedValueOnce(new Error());
     mockBuildUrlLogin.mockImplementationOnce(new Error());
     api
-      .get('/backstage/v1/auth?tenant=admin')
+      .get('/backstage/v1/auth?tenant=admin&return=/')
       .then((res) => {
         expect(res.statusCode).toBe(500);
         expect(res.body).toStrictEqual({ error: 'An unexpected error has occurred.' });
@@ -216,7 +213,7 @@ describe('RoutesV1', () => {
       .then((response) => {
         expect(response.statusCode).toBe(303);
         expect(response.redirect).toBe(true);
-        expect(response.header.location).toBe('http://localhost:8000/return?state=state');
+        expect(response.header.location).toBe('http://localhost:8000/?state=state');
         done();
       });
   });
@@ -242,7 +239,7 @@ describe('RoutesV1', () => {
       .then((response) => {
         expect(response.statusCode).toBe(303);
         expect(response.redirect).toBe(true);
-        expect(response.header.location).toBe('http://localhost:8000/return?error=msgError');
+        expect(response.header.location).toBe('http://localhost:8000/?error=msgError');
         done();
       });
   });
@@ -253,9 +250,10 @@ describe('RoutesV1', () => {
       .get('/backstage/v1/auth/return?code=code&state=state&session_state=session_state')
       .set('Cookie', [cookies])
       .then((response) => {
-        expect(response.statusCode).toBe(303);
-        expect(response.redirect).toBe(true);
-        expect(response.header.location).toBe('http://localhost:8000/return?error=There+is+no+active+session');
+        expect(response.statusCode).toBe(401);
+        expect(response.body).toStrictEqual({
+          error: 'There is no valid session.',
+        });
         done();
       });
   });
@@ -389,7 +387,7 @@ describe('RoutesV1', () => {
   test('/backstage/v1/auth/revoke: ok', (done) => {
     mockRedisGet.mockResolvedValueOnce(sessionMockComplete);
     api
-      .get('/backstage/v1/auth/revoke')
+      .get('/backstage/v1/auth/revoke?return=/')
       .set('Cookie', [cookies])
       .then((response) => {
         expect(response.statusCode).toBe(303);
@@ -402,7 +400,7 @@ describe('RoutesV1', () => {
   test('/backstage/v1/auth/revoke: no session ok', (done) => {
     mockRedisGet.mockResolvedValueOnce(sessionBaseObj);
     api
-      .get('/backstage/v1/auth/revoke')
+      .get('/backstage/v1/auth/revoke?return=/')
       .set('Cookie', [cookies])
       .then((response) => {
         expect(response.statusCode).toBe(303);
@@ -416,7 +414,7 @@ describe('RoutesV1', () => {
     mockRedisGet.mockResolvedValueOnce(sessionMockComplete);
     mockRedisDestroy.mockRejectedValueOnce(new Error());
     api
-      .get('/backstage/v1/auth/revoke')
+      .get('/backstage/v1/auth/revoke?return=/')
       .set('Cookie', [cookies])
       .then((response) => {
         expect(response.statusCode).toBe(303);

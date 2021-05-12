@@ -11,6 +11,7 @@ const OPERATION = Object.freeze({
     MINUTES: 1,
     N: 0,
   },
+  DATE_RANGE: 5,
 });
 
 const WIDGET_TYPE = Object.freeze({
@@ -80,6 +81,16 @@ const generateTemplateKey = (deviceDictionary, device, attr) => {
   return undefined;
 }
 
+const parseValue = value => {
+  if (typeof value === 'boolean' ) {
+    return value;
+  }
+  if (isNaN(value)) {
+    return value;
+  }
+  return parseFloat(value);
+}
+
 const formatOutPut = (dynamicAttributes, staticAttributes, dojotDevices, deviceDictionary, sourceType, widgetType) => {
   const history = [];
   const historyObj = {};
@@ -94,14 +105,14 @@ const formatOutPut = (dynamicAttributes, staticAttributes, dojotDevices, deviceD
     } else {
       if (sourceType === SOURCE.DEVICE) {
         history.push({
-          [`${device_id}${attr}`]: isNaN(value) ? value : parseFloat(value),
+          [`${device_id}${attr}`]: parseValue(value),
           deviceLabel: dojotDevices[device_id] ? dojotDevices[device_id].label : 'undefined',
           timestamp: moment(ts).utc().format("YYYY-MM-DDTHH:mm:ss[Z]"),
         });
       }
       else {
         history.push({
-          [generateTemplateKey(deviceDictionary, device_id, attr)]: isNaN(value) ? value : parseFloat(value),
+          [generateTemplateKey(deviceDictionary, device_id, attr)]: parseValue(value),
           deviceLabel: dojotDevices[device_id] ? dojotDevices[device_id].label : 'undefined',
           timestamp: moment(ts).utc().format("YYYY-MM-DDTHH:mm:ss[Z]"),
         });

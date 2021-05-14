@@ -210,7 +210,7 @@ convention.
 | keycloak.public.client.id | Public Client ID registered in the Keycloak that is used in the plugin process. | gui | string  | BS_KEYCLOAK_PUBLIC_CLIENT_ID
 | keycloak.code.challenge.method | How is the code_challenge is hashed. S256=SHA-256 | S256 | string | BS_CODE_CHALLENGE_METHOD
 | keycloak.secure |  If you want to verify the SSL Certs | false | boolean  | BS_KEYCLOAK_SECURE
-| keycloak.ssl.ca | File path to CAs. | none | path  | BS_KEYCLOAK_CLIENT_TLS_CA
+| keycloak.ssl.ca | File path to CAs. | none | path  | BS_KEYCLOAK_SSL_CA
 | keycloak.ssl.key | File path to key certificate. | none | path  | BS_KEYCLOAK_SSL_KEY
 | keycloak.ssl.cert | File path to  certificate. | none | path  | BS_KEYCLOAK_SSL_CERT
 | keycloak.ssl.request.cert |  Whether to authenticate the remote peer by requesting a certificate. Clients always request a server certificate. | none | boolean | BS_KEYCLOAK_SSL_REQUEST_CERT
@@ -273,7 +273,7 @@ redis.healthcheck.timeout.ms | the timeout to wait if the service can verify if 
 | proxy.target | Target host to proxy to. (protocol + host) | <http://apigw:8000> | url  | BS_PROXY_TARGET
 | proxy.log.level | Log level | info |  ['debug', 'info', 'warn', 'error', 'silent']  | BS_PROXY_LOG_LEVEL
 | proxy.secure |  If you want to verify the SSL Certs | false | boolean  | BS_PROXY_SECURE
-| proxy.ssl.ca | File path to CAs. | none | path  | BS_PROXY_CLIENT_TLS_CA
+| proxy.ssl.ca | File path to CAs. | none | path  | BS_PROXY_SSL_CA
 | proxy.ssl.key | File path to key certificate. | none | path  | BS_PROXY_SSL_KEY
 | proxy.ssl.cert | File path to  certificate. | none | path  | BS_PROXY_SSL_CERT
 | proxy.ssl.request.cert |  Whether to authenticate the remote peer by requesting a certificate. Clients always request a server certificate. | none | boolean | BS_PROXY_SSL_REQUEST_CERT

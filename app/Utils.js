@@ -77,14 +77,21 @@ const replaceTLSFlattenConfigs = (config) => {
     delete configUn.ssl;
 
     if (tlsConfig.cert) {
-      tlsConfig.cert = fs.readFileSync(tlsConfig.cert).toString();
+      tlsConfig.cert = fs.readFileSync(tlsConfig.cert);
     }
     if (tlsConfig.key) {
-      tlsConfig.key = fs.readFileSync(tlsConfig.key).toString();
+      tlsConfig.key = fs.readFileSync(tlsConfig.key);
     }
 
     if (tlsConfig.ca) {
-      tlsConfig.ca = fs.readFileSync(tlsConfig.ca).toString();
+      tlsConfig.ca = fs.readFileSync(tlsConfig.ca);
+    }
+
+    if (tlsConfig.rejectUnauthorized) {
+      tlsConfig.rejectUnauthorized = tlsConfig.rejectUnauthorized === 'true';
+    }
+    if (tlsConfig.requestCert) {
+      tlsConfig.requestCert = tlsConfig.requestCert === 'true';
     }
 
     const newConfig = config;

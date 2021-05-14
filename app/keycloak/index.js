@@ -34,19 +34,26 @@ class Keycloak {
       this.healthCheckMs = configKeycloak['healthcheck.ms'];
       this.createHealthChecker(serviceState);
 
-
-      this.axiosKeycloak = axios.create({
-        baseURL: this.internalKeycloakUrl,
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      });
-
+      let httpsAgent = null;
       if (configKeycloak.secure) {
         const configReplaced = replaceTLSFlattenConfigs(configKeycloak);
-
-        this.axiosKeycloak.httpsAgent = new https.Agent(
+        httpsAgent = new https.Agent(
           { ...configReplaced.ssl },
         );
       }
+
+      const objConfigAxiosCreate = {
+        baseURL: this.internalKeycloakUrl,
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      };
+
+      if (httpsAgent) {
+        objConfigAxiosCreate.httpsAgent=httpsAgent;
+      }
+
+      this.axiosKeycloak = axios.create(objConfigAxiosCreate);
+
+      logger.debug('... final configs to axios create =', objConfigAxiosCreate);
 
       this.requests = new Requests(
         this.clientId,

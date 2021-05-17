@@ -48,12 +48,12 @@ class Keycloak {
       };
 
       if (httpsAgent) {
-        objConfigAxiosCreate.httpsAgent=httpsAgent;
+        objConfigAxiosCreate.httpsAgent = httpsAgent;
       }
 
       this.axiosKeycloak = axios.create(objConfigAxiosCreate);
 
-      logger.debug('... final configs to axios create =', objConfigAxiosCreate);
+      logger.debug('...final configs to axios create=', objConfigAxiosCreate);
 
       this.requests = new Requests(
         this.clientId,

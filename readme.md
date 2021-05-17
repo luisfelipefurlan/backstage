@@ -180,13 +180,13 @@ convention.
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
 | app.base.url| The URL where this service will be available  | <http://localhost:8000> | URL | BS_APP_BASE_URL
-| app.internal.base.url| Internal access URL. In the case of dojot it is the URL to access the kong, our API Gateway, there is still an internal authorization check for access to the endpoint/resource if you are using the pepkong plugin. | <http://apigw:8000> | URL | BS_APP_INTERNAL_BASE_URL
+<!-- | app.internal.base.url| Internal access URL. In the case of dojot it is the URL to access the kong, our API Gateway, there is still an internal authorization check for access to the endpoint/resource if you are using the pepkong plugin. | <http://apigw:8000> | URL | BS_APP_INTERNAL_BASE_URL -->
 | log.console.level | Console logger level | info | info, debug, error, warn | BS_LOG_CONSOLE_LEVEL
 | log.file | Enables logging on file (location: /var/log/backstage-logs-%DATE%.log) | false | boolean  | BS_LOG_FILE
 | log.file.level  | Log level to log on files | info | string  | BS_LOG_FILE_LEVEL
 | log.verbose | Whether to enable logger verbosity or not | false | boolean | BS_LOG_VERBOSE
 | express.trustproxy | Enables reverse proxy support  | true | boolean | BS_EXPRESS_TRUSTPROXY
-| graphql.graphiql |  If true, presents GraphiQL when the GraphQL endpoint is loaded in a browser. We recommend that you set graphiql to true when your app is in development, because it's quite useful. You may or may not want it in production. | false | boolean | BS_GRAPHQL_GRAPHIQL
+
 
 #### Server Configurations
 
@@ -204,8 +204,8 @@ convention.
 
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
-| keycloak.url.api.gateway | URL for internal access via the Keycloak Gateway API | <http://apigw:8000/auth> | URL  | BS_KEYCLOAK_URL_API_GATEWAY
-| keycloak.url.external | URL for external access | <http://localhost:8000/auth> | URL  | BS_KEYCLOAK_URL_EXTERNAL
+| keycloak.url.api.gateway | URL for  access via the Keycloak Gateway API - TODO | http://apigw:8000/auth | URL  | BS_KEYCLOAK_URL_API_GATEWAY
+| keycloak.url.external | URL for external access - TODO| <http://localhost:8000/auth> | URL  | BS_KEYCLOAK_URL_EXTERNAL
 | keycloak.healthcheck.ms | Specifies how often it is to check if it is possible to communicate with the keycloak in milliseconds. | 30000 | number (ms)  | BS_KEYCLOAK_HEALTHCHECK_MS
 | keycloak.public.client.id | Public Client ID registered in the Keycloak that is used in the plugin process. | gui | string  | BS_KEYCLOAK_PUBLIC_CLIENT_ID
 | keycloak.code.challenge.method | How is the code_challenge is hashed. S256=SHA-256 | S256 | string | BS_CODE_CHALLENGE_METHOD
@@ -215,6 +215,20 @@ convention.
 | keycloak.ssl.cert | File path to  certificate. | none | path  | BS_KEYCLOAK_SSL_CERT
 | keycloak.ssl.request.cert |  Whether to authenticate the remote peer by requesting a certificate. Clients always request a server certificate. | none | boolean | BS_KEYCLOAK_SSL_REQUEST_CERT
 | keycloak.ssl.reject.unauthorized |   If true, the server certificate is verified against the list of supplied CAs.  | none | boolean |  BS_KEYCLOAK_SSL_REJECT_UNAUTHORIZED
+
+
+#### Backstage Configurations
+
+| Key | Purpose | Default Value | Valid Values | Environment variable
+| --- | ------- | ------------- | ------------ | --------------------
+| graphql.base.url | URL for access dojot | http://apigw:8000 | URL  | BS_GRAPHQL_BASE_URL
+| graphql.secure |  If you want to verify the SSL Certs | false | boolean  | BS_GRAPHQL_SECURE
+| graphql.ssl.ca | File path to CAs. | none | path  | BS_GRAPHQL_SSL_CA
+| graphql.ssl.key | File path to key certificate. | none | path  | BS_GRAPHQL_SSL_KEY
+| graphql.ssl.cert | File path to  certificate. | none | path  | BS_GRAPHQL_SSL_CERT
+| graphql.ssl.request.cert |  Whether to authenticate the remote peer by requesting a certificate. Clients always request a server certificate. | none | boolean | BS_GRAPHQL_SSL_REQUEST_CERT
+| graphql.ssl.reject.unauthorized |   If true, the server certificate is verified against the list of supplied CAs.  | none | boolean |  BS_GRAPHQL_SSL_REJECT_UNAUTHORIZED
+| graphql.graphiql |  If true, presents GraphiQL when the GraphQL endpoint is loaded in a browser. We recommend that you set graphiql to true when your app is in development, because it's quite useful. You may or may not want it in production. | false | boolean | BS_GRAPHQL_GRAPHIQL
 
 #### Session Configurations
 
@@ -270,7 +284,7 @@ redis.healthcheck.timeout.ms | the timeout to wait if the service can verify if 
 
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
-| proxy.target | Target host to proxy to. (protocol + host) | <http://apigw:8000> | url  | BS_PROXY_TARGET
+| proxy.target | Target host to proxy to. (protocol + host) - TODO | http://apigw:8000 | url  | BS_PROXY_TARGET
 | proxy.log.level | Log level | info |  ['debug', 'info', 'warn', 'error', 'silent']  | BS_PROXY_LOG_LEVEL
 | proxy.secure |  If you want to verify the SSL Certs | false | boolean  | BS_PROXY_SECURE
 | proxy.ssl.ca | File path to CAs. | none | path  | BS_PROXY_SSL_CA

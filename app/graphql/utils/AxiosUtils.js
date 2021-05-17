@@ -1,10 +1,24 @@
 const {
-  ConfigManager: { getConfig },
+  ConfigManager: { getConfig }, 
+  Logger,
 } = require('@dojot/microservice-sdk');
+const https = require('https');
+const { replaceTLSFlattenConfigs } = require('../../Utils');
 
 const {
-  app: configApp,
+  graphql: configGraphql,
 } = getConfig('BS');
+
+const logger = new Logger('backstage:graphql/utils/AxiosUtils');
+
+let httpsAgent = null;
+if (configGraphql.secure) {
+  const configReplaced = replaceTLSFlattenConfigs(configGraphql);
+  httpsAgent = new https.Agent(
+    { ...configReplaced.ssl },
+  );
+}
+
 
 class AxiosUtils {
   static get GET() {
@@ -19,8 +33,8 @@ class AxiosUtils {
     return 'DELETE';
   }
 
-  static optionsAxios(method, url, token, baseUrl = configApp['internal.base.url']) {
-    return {
+  static optionsAxios(method, url, token, baseUrl = configGraphql['base.url']) {
+    const objConfigAxios = {
       method,
       headers: {
         'content-type': 'application/json',
@@ -28,6 +42,12 @@ class AxiosUtils {
       },
       url: `${baseUrl}${url}`,
     };
+
+    if (httpsAgent) {
+      objConfigAxios.httpsAgent = httpsAgent;
+    }
+    logger.debug('...final configs to axios create=', objConfigAxios);
+    return objConfigAxios;
   }
 
   static handleErrorAxios(error) {

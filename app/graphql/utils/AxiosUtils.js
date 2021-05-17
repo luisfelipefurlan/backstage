@@ -1,5 +1,5 @@
 const {
-  ConfigManager: { getConfig }, 
+  ConfigManager: { getConfig },
   Logger,
 } = require('@dojot/microservice-sdk');
 const https = require('https');
@@ -17,6 +17,9 @@ if (configGraphql.secure) {
   httpsAgent = new https.Agent(
     { ...configReplaced.ssl },
   );
+  logger.info('Requests will happen over https');
+} else {
+  logger.info('Requests will not happen over https');
 }
 
 
@@ -36,17 +39,18 @@ class AxiosUtils {
   static optionsAxios(method, url, token, baseUrl = configGraphql['base.url']) {
     const objConfigAxios = {
       method,
+      baseURL: baseUrl,
       headers: {
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      url: `${baseUrl}${url}`,
+      url,
     };
 
     if (httpsAgent) {
       objConfigAxios.httpsAgent = httpsAgent;
     }
-    logger.debug('...final configs to axios create=', objConfigAxios);
+    logger.debug('...final configs to axios=', objConfigAxios);
     return objConfigAxios;
   }
 

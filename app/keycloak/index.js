@@ -5,7 +5,7 @@ const {
 const { default: axios } = require('axios');
 const https = require('https');
 const Requests = require('./Requests.js');
-const { buildUrlLogin, buildUrlLogout } = require('./Utils.js');
+const { buildUrlLogin, buildUrlLogout, buildUrlAccConfig } = require('./Utils.js');
 const { replaceTLSFlattenConfigs } = require('../Utils');
 
 const {
@@ -113,6 +113,21 @@ class Keycloak {
       realm,
     });
   }
+
+  /**
+   * Built external URL for browser logout
+   *
+   * @param {string} realm
+   * @returns
+   */
+  buildUrlAccConfig(realm) {
+    this.checkInitiated();
+    return buildUrlAccConfig({
+      baseUrl: this.externalKeycloakUrl,
+      realm,
+    });
+  }
+
 
   /**
    * Create a 'healthCheck' for Keycloak

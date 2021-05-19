@@ -80,8 +80,11 @@ createService "${1}" "${2}"
 createRoute "${1}" "${1}_route" "${3}" "${4}"
 }
 
-createEndpoint "device-manager" "http://dojot-mock:8888"  '"/device", "/template"' "false"
-addAuthToEndpoint "device-manager"
+createEndpoint "device-manager-template" "http://dojot-mock:8888"  '"/template"' "false"
+addAuthToEndpoint "device-manager-template"
+
+createEndpoint "device-manager-devices" "http://dojot-mock:8888"  '"/device"' "false"
+addAuthToEndpoint "device-manager-devices"
 
 createEndpoint "history" "http://dojot-mock:8888"  '"/history"' "false"
 addAuthToEndpoint "history"

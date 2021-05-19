@@ -18,6 +18,7 @@ if (configGraphql.secure) {
     { ...configReplaced.ssl },
   );
   logger.info('Requests will happen over https');
+  logger.debug('...tls configs=', configReplaced.ssl);
 } else {
   logger.info('Requests will not happen over https');
 }
@@ -50,7 +51,6 @@ class AxiosUtils {
     if (httpsAgent) {
       objConfigAxios.httpsAgent = httpsAgent;
     }
-    logger.debug('...final configs to axios=', objConfigAxios);
     return objConfigAxios;
   }
 

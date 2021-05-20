@@ -76,6 +76,7 @@ const mockKey = {
   })),
   buildUrlLogin: mockBuildUrlLogin,
   buildUrlLogout: jest.fn(() => ('http://buildUrlLogout:8000')),
+  buildUrlAccConfig: jest.fn(() => ('http://localhost:8000/auth/realms/admin/account')),
 };
 
 const request = require('supertest');
@@ -285,6 +286,7 @@ describe('RoutesV1', () => {
           emailVerified: true,
           realm: 'realm',
           tenant: 'realm',
+          urlAcc: 'http://localhost:8000/auth/realms/admin/account',
         });
         done();
       });
@@ -316,6 +318,7 @@ describe('RoutesV1', () => {
           emailVerified: true,
           realm: 'realm',
           tenant: 'realm',
+          urlAcc: 'http://localhost:8000/auth/realms/admin/account',
         });
         done();
       });

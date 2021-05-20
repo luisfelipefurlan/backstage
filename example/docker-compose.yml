@@ -110,7 +110,8 @@ services:
   keycloak:
     image: jboss/keycloak:12.0.4
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: always
     volumes:
       - ./keycloak/admin_realm.json:/tmp/example-realm.json:Z
@@ -172,7 +173,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: always
     ports:
       - 5050:80

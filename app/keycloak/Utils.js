@@ -58,8 +58,26 @@ const buildUrlLogout = ({
   return url.href;
 };
 
+/**
+ * Built external URL for browser logout
+ *
+ * @param {object} param0
+ * @param {string} param0.baseUrl Start URL
+ * @param {string} param0.realm Realm
+ * @returns
+ */
+const buildUrlAccConfig = ({
+  baseUrl,
+  realm,
+}) => {
+  const url = new URL(`${baseUrl}/realms/${realm}/account`);
+  return url.href;
+};
+
+
 module.exports = {
   buildUrlLogin,
   buildUrlLogout,
   endpointOIDC,
+  buildUrlAccConfig,
 };

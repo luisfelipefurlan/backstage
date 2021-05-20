@@ -176,9 +176,15 @@ module.exports = ({ mountPoint, keycloak }) => {
                   .getPermissionsByToken(realm, accessToken);
                 const userInfoObj = await keycloak.getRequestsInstance()
                   .getUserInfoByToken(realm, accessToken);
+
+                const urlAccConfig = keycloak.buildUrlAccConfig(
+                  realm,
+                );
+
                 const result = {
                   permissions: permissionsArr,
                   ...userInfoObj,
+                  urlAcc: urlAccConfig,
                 };
 
                 logger.debug(`auth-user-info-route.get: result=${JSON.stringify(result)}`);

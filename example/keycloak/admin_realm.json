@@ -944,11 +944,11 @@
                 "policyEnforcementMode": "ENFORCING",
                 "resources": [
                     {
-                        "name": "history",
-                        "ownerManagedAccess": false,
-                        "displayName": "history",
+                        "name": "kafka-ws-ticket",
+                        "ownerManagedAccess": true,
+                        "displayName": "kafka-ws-ticket: /kafka-ws",
                         "attributes": {},
-                        "_id": "dd19aeff-2400-411a-af5e-22baa0d31b25",
+                        "_id": "b6b98d55-5f71-4b00-878c-dc6e3516d0bd",
                         "uris": [],
                         "scopes": [
                             {
@@ -957,21 +957,24 @@
                         ]
                     },
                     {
-                        "name": "Default Resource",
-                        "type": "urn:kong:resources:default",
-                        "ownerManagedAccess": false,
+                        "name": "influxdb-retriever",
+                        "ownerManagedAccess": true,
+                        "displayName": "influxdb-retriever: /tss",
                         "attributes": {},
-                        "_id": "deeaf496-2b24-460b-8728-38d0f85b12b1",
-                        "uris": [
-                            "/*"
+                        "_id": "21c1926a-2768-46a5-9067-267140b7a0f8",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            }
                         ]
                     },
                     {
-                        "name": "device-manager",
+                        "name": "cron",
                         "ownerManagedAccess": true,
-                        "displayName": "Device manager",
+                        "displayName": "cron:  /backstage",
                         "attributes": {},
-                        "_id": "8446fc0d-5fd5-4e39-bfc1-14672e9d144e",
+                        "_id": "d979270d-5e8c-4695-b61d-dff066e00554",
                         "uris": [],
                         "scopes": [
                             {
@@ -987,31 +990,227 @@
                                 "name": "create"
                             }
                         ]
+                    },
+                    {
+                        "name": "data-manager-export",
+                        "ownerManagedAccess": true,
+                        "displayName": "data-manager-export: /export",
+                        "attributes": {},
+                        "_id": "130b8016-c47a-41a6-9076-d5c92d3a2731",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "data-manager-import",
+                        "ownerManagedAccess": true,
+                        "displayName": "data-manager-import: /import",
+                        "attributes": {},
+                        "_id": "aa068759-4f0e-4338-a14b-841d3cd91d76",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "backstage",
+                        "ownerManagedAccess": true,
+                        "displayName": "backstage:  /backstage",
+                        "attributes": {},
+                        "_id": "1353fdb6-e080-4b65-8523-9860dc27a769",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "image",
+                        "ownerManagedAccess": true,
+                        "displayName": "image: /fw-image/",
+                        "attributes": {},
+                        "_id": "c3b7ef48-b72c-4903-88b5-36201ef3f2ac",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "data-broker-streams",
+                        "ownerManagedAccess": true,
+                        "displayName": "data-broker-streams: /stream",
+                        "attributes": {},
+                        "_id": "e833bfdf-1623-448f-8bbb-252a77627eb9",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "data-broker",
+                        "ownerManagedAccess": true,
+                        "displayName": "data-broker:  /device/(.*)/latest\", /subscription\"",
+                        "attributes": {},
+                        "_id": "7ff536fc-989e-4fac-af44-01504a752973",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "x509-identity-mgmt",
+                        "ownerManagedAccess": true,
+                        "displayName": "x509-identity-mgmt: /x50",
+                        "attributes": {},
+                        "_id": "fb028ae4-bfb2-4059-9fd3-febc49326192",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "flows",
+                        "ownerManagedAccess": true,
+                        "displayName": "Flowbroker: /flows",
+                        "attributes": {},
+                        "_id": "b9cc357e-29c0-4a3b-8f99-2a22e0bffece",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "device-manager-template",
+                        "ownerManagedAccess": false,
+                        "displayName": "Device manager: /template",
+                        "attributes": {},
+                        "_id": "2370775a-ab10-4776-95ff-78bc08874c55",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "device-manager-devices",
+                        "ownerManagedAccess": true,
+                        "displayName": "Device manager: /devices",
+                        "attributes": {},
+                        "_id": "4375e122-c311-47b5-89ad-01d35610c19f",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            },
+                            {
+                                "name": "update"
+                            },
+                            {
+                                "name": "delete"
+                            },
+                            {
+                                "name": "create"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Default Resource",
+                        "type": "urn:kong:resources:default",
+                        "ownerManagedAccess": false,
+                        "attributes": {},
+                        "_id": "cf1e5fd4-12d6-44ab-b37b-143f58dc42a7",
+                        "uris": [
+                            "/*"
+                        ]
+                    },
+                    {
+                        "name": "history",
+                        "ownerManagedAccess": false,
+                        "displayName": "History: /history",
+                        "attributes": {},
+                        "_id": "543cd0d8-7d96-4fa0-a6c0-b094d6ef67d9",
+                        "uris": [],
+                        "scopes": [
+                            {
+                                "name": "view"
+                            }
+                        ]
                     }
                 ],
                 "policies": [
                     {
-                        "id": "73a358b1-9a67-451c-9b70-4794a23da91f",
-                        "name": "Should be user",
-                        "type": "role",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "UNANIMOUS",
-                        "config": {
-                            "roles": "[{\"id\":\"user\",\"required\":true}]"
-                        }
-                    },
-                    {
-                        "id": "16c2406d-a811-4723-ae2d-96f61ade6b88",
-                        "name": "Should be admin",
-                        "type": "role",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "UNANIMOUS",
-                        "config": {
-                            "roles": "[{\"id\":\"admin\",\"required\":true}]"
-                        }
-                    },
-                    {
-                        "id": "2de55491-aa12-44e3-a449-ba15a128ecc6",
+                        "id": "932b86f0-bbe2-46b7-8614-44f9bb2d282a",
                         "name": "Default Policy",
                         "description": "A policy that grants access only for users within this realm",
                         "type": "js",
@@ -1022,8 +1221,160 @@
                         }
                     },
                     {
-                        "id": "aadfc99f-fb62-42dc-9f27-d26fd10a07b8",
-                        "name": "View history",
+                        "id": "88382c68-5e67-414c-be35-d94ecba5ca8c",
+                        "name": "Should be admin",
+                        "type": "role",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "roles": "[{\"id\":\"admin\",\"required\":true}]"
+                        }
+                    },
+                    {
+                        "id": "b7f96ec4-cfc3-4ebf-8877-7a3b615596b7",
+                        "name": "Should be user",
+                        "type": "role",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "roles": "[{\"id\":\"user\",\"required\":true}]"
+                        }
+                    },
+                    {
+                        "id": "ed783054-d665-4ac0-9f94-337fa1e369dc",
+                        "name": "View kafka-ws-ticket: /kafka-ws",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"kafka-ws-ticket\"]",
+                            "scopes": "[\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "45d3261c-d464-4712-b7ff-ace2263e98ef",
+                        "name": "View influxdb-retriever - /tss",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"influxdb-retriever\"]",
+                            "scopes": "[\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "5a9ac5ba-807e-481b-97f4-640346978c96",
+                        "name": "Full access in cron - /cron",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"cron\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "ecf2ef8f-fd2e-43ce-92fb-1fa213a1dac3",
+                        "name": "Create data-manager-import  /import",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"data-manager-import\"]",
+                            "scopes": "[\"create\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "de41efe7-d4f7-4ad4-8b4d-41a41796103b",
+                        "name": "View data-manager-export- /export",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"data-manager-export\"]",
+                            "scopes": "[\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "4536bce6-1244-471c-8218-c1917e000a3f",
+                        "name": "Full access in backstage - /backstage",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"backstage\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "214f683c-0662-476e-b9fe-0218386bbdd9",
+                        "name": "Full access in images - /fw-image",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"image\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "dfb31d6d-002b-4b06-9e6b-e10c1fde626b",
+                        "name": "Full access in Data Broker - /device/(.*)/latest, /subscription",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"data-broker\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "801707b5-3504-4f37-8e4f-f9cedaa17f70",
+                        "name": "View in Data Broker Streams - /streams",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"data-broker-streams\"]",
+                            "scopes": "[\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "e5c003ed-62f2-4c00-b3a2-087ae14855e1",
+                        "name": "Full access in x509-identity-mgmt - /x509/v1",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"x509-identity-mgmt\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "33a1fec8-6a05-4206-9491-d69bea5cf801",
+                        "name": "Full access in Flows - /flow",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"flows\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "5fcc2e3d-4d7b-4d26-af51-4210a5f7a1c3",
+                        "name": "View history - /history",
                         "type": "scope",
                         "logic": "POSITIVE",
                         "decisionStrategy": "UNANIMOUS",
@@ -1034,7 +1385,31 @@
                         }
                     },
                     {
-                        "id": "12e5c65a-3876-47d4-81ed-1d154eeae8de",
+                        "id": "3516e36b-685f-4a63-9d67-4dfc5911c47e",
+                        "name": "Full access in Device Manager - /template",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"device-manager-template\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "1853885d-1f91-42f8-8a7e-3c1ca7c6fc51",
+                        "name": "Full access in Device Manager - /device",
+                        "type": "scope",
+                        "logic": "POSITIVE",
+                        "decisionStrategy": "UNANIMOUS",
+                        "config": {
+                            "resources": "[\"device-manager-devices\"]",
+                            "scopes": "[\"update\",\"create\",\"delete\",\"view\"]",
+                            "applyPolicies": "[\"Should be user\"]"
+                        }
+                    },
+                    {
+                        "id": "df956658-7a72-4ce3-b643-20c47f5cf992",
                         "name": "Default Permission",
                         "description": "A permission that applies to the default resource type",
                         "type": "resource",
@@ -1044,48 +1419,24 @@
                             "defaultResourceType": "urn:kong:resources:default",
                             "applyPolicies": "[\"Default Policy\"]"
                         }
-                    },
-                    {
-                        "id": "02d3cf2a-163b-4438-a1ea-4c0554008c8b",
-                        "name": "Modifications Device Manager",
-                        "type": "scope",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "UNANIMOUS",
-                        "config": {
-                            "resources": "[\"device-manager\"]",
-                            "scopes": "[\"delete\",\"update\",\"create\"]",
-                            "applyPolicies": "[\"Should be admin\"]"
-                        }
-                    },
-                    {
-                        "id": "40de7a6b-270a-4be8-b3a8-9198da4d7ec5",
-                        "name": "View Device Manager",
-                        "type": "scope",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "UNANIMOUS",
-                        "config": {
-                            "resources": "[\"device-manager\"]",
-                            "scopes": "[\"view\"]",
-                            "applyPolicies": "[\"Should be user\"]"
-                        }
                     }
                 ],
                 "scopes": [
                     {
-                        "id": "6a4feb04-64b1-41e8-adb0-740bcac08b88",
-                        "name": "view"
+                        "id": "197ef9ff-429b-451c-81bc-a8ef9d8f8926",
+                        "name": "create"
                     },
                     {
-                        "id": "8cb64670-c2f1-4f22-9951-a185d4f71357",
-                        "name": "update"
-                    },
-                    {
-                        "id": "bdc52899-537d-46e3-94c0-3ae1e68ce4bb",
+                        "id": "d97fe16c-3603-4a7f-9f68-338d5fadd413",
                         "name": "delete"
                     },
                     {
-                        "id": "be943d69-97cb-445e-bc0a-d1a3c311550b",
-                        "name": "create"
+                        "id": "605d0ead-9f27-4a3b-a0d5-c9e1b436d6c2",
+                        "name": "update"
+                    },
+                    {
+                        "id": "8a83b7b7-30ee-4817-b80d-48821b4256bd",
+                        "name": "view"
                     }
                 ],
                 "decisionStrategy": "UNANIMOUS"

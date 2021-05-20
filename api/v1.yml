@@ -166,6 +166,8 @@ paths:
                     type: string
                   emailVerified:
                     type: boolean
+                  urlAcc:
+                    type: string
                   tenant:
                     description: the same as Realm
                     type: string

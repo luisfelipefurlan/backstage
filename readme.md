@@ -104,7 +104,7 @@ The sequence diagram (figure 2) shows the main flows and below the figure are ex
 2. Login data sending flow
    1. The user places his login and password, and sends it to the keycloak. If they are valid, the keycloak continues the flow and redirects to the URL via GET defined in redirect_uri, in the case `<app.base.url>/backstage/v1/auth/return`,passing the Authorization Code and State in the QueryString of the URL.
    1. The Backstage `<app.base.url>/backstage/v1/auth/return` endpoint receives the Authorization Code. (As much as the request is made for the backend, the return happens in the browser and the authorization code is exposed, which is not a problem since we have the PKCE verification in the backend).
-   1. The Backstage makes a request to the keycloak to obtain the Token and Refresh Token via POST with content-type of type 'application/x-www-form-urlencoded' for URL `<keycloak.url.api.gateway>/auth/realms/$TENANT/protocol/openid-connect/token` passing in the request body `grant_type=authorization_code & redirect_uri=$REDIRECT_URI&client_id=<keycloak.public.client.id>&code_verifier=$CODE_VERIFIER&code=$AUTHORIZATION_CODE`.
+   1. The Backstage makes a request to the keycloak to obtain the Token and Refresh Token via POST with content-type of type 'application/x-www-form-urlencoded' for URL `<keycloak.url.internal>/auth/realms/$TENANT/protocol/openid-connect/token` passing in the request body `grant_type=authorization_code & redirect_uri=$REDIRECT_URI&client_id=<keycloak.public.client.id>&code_verifier=$CODE_VERIFIER&code=$AUTHORIZATION_CODE`.
    1. If the backstage flow works, that is, the Backstage is able to receive the Token and the Refresh Token, the Backstage redirects with the code 303 to `<app.base.url>$RETURN` and `state=$STATE`.
    1. The redirected URL is called in the Browser
    1. The page is requested for the GUI
@@ -180,7 +180,6 @@ convention.
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
 | app.base.url| The URL where this service will be available  | <http://localhost:8000> | URL | BS_APP_BASE_URL
-<!-- | app.internal.base.url| Internal access URL. In the case of dojot it is the URL to access the kong, our API Gateway, there is still an internal authorization check for access to the endpoint/resource if you are using the pepkong plugin. | <http://apigw:8000> | URL | BS_APP_INTERNAL_BASE_URL -->
 | log.console.level | Console logger level | info | info, debug, error, warn | BS_LOG_CONSOLE_LEVEL
 | log.file | Enables logging on file (location: /var/log/backstage-logs-%DATE%.log) | false | boolean  | BS_LOG_FILE
 | log.file.level  | Log level to log on files | info | string  | BS_LOG_FILE_LEVEL
@@ -204,8 +203,8 @@ convention.
 
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
-| keycloak.url.api.gateway | URL for  access via the Keycloak Gateway API - TODO | http://apigw:8000/auth | URL  | BS_KEYCLOAK_URL_API_GATEWAY
-| keycloak.url.external | URL for external access - TODO| <http://localhost:8000/auth> | URL  | BS_KEYCLOAK_URL_EXTERNAL
+| keycloak.url.internal | URL for  access via the Keycloak internally | http://apigw:8000/auth | URL  | BS_KEYCLOAK_URL_INTERNAL
+| keycloak.url.external | URL for  access via the Keycloak externally | http://localhost:8000/auth | URL  | BS_KEYCLOAK_URL_EXTERNAL
 | keycloak.healthcheck.ms | Specifies how often it is to check if it is possible to communicate with the keycloak in milliseconds. | 30000 | number (ms)  | BS_KEYCLOAK_HEALTHCHECK_MS
 | keycloak.public.client.id | Public Client ID registered in the Keycloak that is used in the plugin process. | gui | string  | BS_KEYCLOAK_PUBLIC_CLIENT_ID
 | keycloak.code.challenge.method | How is the code_challenge is hashed. S256=SHA-256 | S256 | string | BS_CODE_CHALLENGE_METHOD

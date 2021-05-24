@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 const mockConfig = {
   app: {
-    'base.url': 'http://localhost:8000'
+    'base.url': 'http://localhost:8000',
   },
   redis: {
     'client.host': 'backstage-redis',

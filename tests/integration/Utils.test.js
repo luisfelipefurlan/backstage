@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 const mockRandomString = {
   generate: jest.fn(() => ('randomString')),
 };

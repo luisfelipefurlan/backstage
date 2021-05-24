@@ -216,11 +216,11 @@ convention.
 | keycloak.ssl.reject.unauthorized |   If true, the server certificate is verified against the list of supplied CAs.  | none | boolean |  BS_KEYCLOAK_SSL_REJECT_UNAUTHORIZED
 
 
-#### Backstage Configurations
+#### Graphql Configurations
 
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
-| graphql.base.url | URL for access dojot | http://apigw:8000 | URL  | BS_GRAPHQL_BASE_URL
+| graphql.base.url | URL that graphql will use to access dojot endpoints | http://apigw:8000 | URL  | BS_GRAPHQL_BASE_URL
 | graphql.secure |  If you want to verify the SSL Certs | false | boolean  | BS_GRAPHQL_SECURE
 | graphql.ssl.ca | File path to CAs. | none | path  | BS_GRAPHQL_SSL_CA
 | graphql.ssl.key | File path to key certificate. | none | path  | BS_GRAPHQL_SSL_KEY

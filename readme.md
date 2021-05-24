@@ -116,10 +116,10 @@ The sequence diagram (figure 2) shows the main flows and below the figure are ex
       - The user is redirected to `<app.base.url>$RETURN` and a message is sent in QueryString saying that there was a problem, the GUI handles the message.
    - Alternative to 2.8: if you can't get data from the active session
       - The session is deleted and returns 401
-3. An example Flow of obtaining data from dojot APIs
+3. An example Flow of obtaining data from dojot APIs and GraphQL
    1. The user already logged in makes a request to see the list of devices registered in his tenant, for some URL of the type `<app.base.url>/backstage/v1/devices`.
    1. Backstage receives the request that will make requests for some dojot API. **NOTE: It is checked if the current token is expired, if so, look for a new one with the refresh token. If it is unable return 401.**
-   1. The backstage requests the data for the dojot APIs by passing the current access token via Kong (at this point kong checks if the Token can access the resource), to a url like `<app.internal.base.url>/devices`.
+   1. The backstage requests the data for the dojot APIs by passing the current access token via Kong (at this point kong checks if the Token can access the resource), to a url like `<graphql.base.url>/devices`.
    1. The dojot API returns data to Backstage
    1. The backstage handles the data in some way, depending on the use case, and returns it to the GUI
    1. Some page using such data is loaded in the Browser
@@ -153,7 +153,7 @@ There is an proxy endpoint for internal calls to dojot via api gateway (kong). I
 
 To access the data via Proxy it is necessary to have executed the authentication flow of OAuth using OpenID via the keycloak, that is, to have a cookie with a valid session id in the backstage.
 
-For example, calling `<app.base.url>/backstage/v1/proxy/device` internally will be called `<app.internal.base.url>/device`.
+For example, calling `<app.base.url>/backstage/v1/proxy/device` internally will be called `<proxy.target>/device`.
 
 ## Running the service
 

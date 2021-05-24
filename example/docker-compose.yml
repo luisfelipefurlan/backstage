@@ -217,7 +217,7 @@ services:
       BS_SESSION_SECRET: j0yYsBdc4p+PPq6ArjshcPdz0HA6W
       BS_SESSION_COOKIE_HTTPS: 'false'
       BS_APP_BASE_URL: 'http://localhost:8000' # The URL where this service will be available
-      BS_KEYCLOAK_URL_EXTERNAL: 'http://localhost:8000/auth' # TODO URL for external access
+      BS_KEYCLOAK_URL_EXTERNAL: 'http://localhost:8000/auth' # URL for external access
       BS_SESSION_DOMAIN: localhost # The domain where the cookie will be used.
       BS_GRAPHQL_GRAPHIQL: 'true' # If true, presents GraphiQL when the GraphQL endpoint is loaded in a browser.
     restart: always

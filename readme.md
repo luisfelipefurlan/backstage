@@ -283,7 +283,7 @@ redis.healthcheck.timeout.ms | the timeout to wait if the service can verify if 
 
 | Key | Purpose | Default Value | Valid Values | Environment variable
 | --- | ------- | ------------- | ------------ | --------------------
-| proxy.target | Target host to proxy to. (protocol + host) - TODO | http://apigw:8000 | url  | BS_PROXY_TARGET
+| proxy.target | Target host to proxy to. (protocol + host) | http://apigw:8000 | url  | BS_PROXY_TARGET
 | proxy.log.level | Log level | info |  ['debug', 'info', 'warn', 'error', 'silent']  | BS_PROXY_LOG_LEVEL
 | proxy.secure |  If you want to verify the SSL Certs | false | boolean  | BS_PROXY_SECURE
 | proxy.ssl.ca | File path to CAs. | none | path  | BS_PROXY_SSL_CA

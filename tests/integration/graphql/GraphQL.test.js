@@ -1,5 +1,5 @@
 const mockConfig = {
-  app: { 'internal.base.url': 'abc' },
+  graphql: { 'base.url': 'abc', secure: false },
 };
 const mockSdk = {
   ConfigManager: {

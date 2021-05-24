@@ -1,8 +1,7 @@
 /* eslint-disable max-classes-per-file */
 const mockConfig = {
   app: {
-    'base.url': 'http://localhost:8000',
-    'internal.base.url': 'http://apigw:8000',
+    'base.url': 'http://localhost:8000'
   },
   keycloak: {
     'url.internal': 'http://apigw:8000/auth',

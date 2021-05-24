@@ -88,10 +88,10 @@ const replaceTLSFlattenConfigs = (config) => {
     }
 
     if (tlsConfig.rejectUnauthorized) {
-      tlsConfig.rejectUnauthorized = tlsConfig.rejectUnauthorized === 'true';
+      tlsConfig.rejectUnauthorized = typeof tlsConfig.rejectUnauthorized === 'boolean' ? tlsConfig.rejectUnauthorized : tlsConfig.rejectUnauthorized === 'true';
     }
     if (tlsConfig.requestCert) {
-      tlsConfig.requestCert = tlsConfig.requestCert === 'true';
+      tlsConfig.requestCert = typeof tlsConfig.requestCert === 'boolean' ? tlsConfig.requestCert : tlsConfig.requestCert === 'true';
     }
 
     const newConfig = config;

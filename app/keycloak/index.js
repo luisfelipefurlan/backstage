@@ -30,7 +30,7 @@ class Keycloak {
       this.serviceName = 'keycloak';
       this.clientId = configKeycloak['public.client.id'];
       this.externalKeycloakUrl = configKeycloak['url.external'];
-      this.internalKeycloakUrl = configKeycloak['url.api.gateway'];
+      this.internalKeycloakUrl = configKeycloak['url.internal'];
       this.healthCheckMs = configKeycloak['healthcheck.ms'];
       this.createHealthChecker(serviceState);
 

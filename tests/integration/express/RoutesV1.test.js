@@ -15,7 +15,6 @@ const mockConfig = {
   },
   app: {
     'base.url': 'http://localhost:8000',
-    'internal.base.url': 'http://apigw:8000',
   },
   proxy: {
     target: 'http://127.0.0.1:34059',

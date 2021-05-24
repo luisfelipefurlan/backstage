@@ -2,10 +2,9 @@
 const mockConfig = {
   app: {
     'base.url': 'http://localhost:8000',
-    'internal.base.url': 'http://apigw:8000',
   },
   keycloak: {
-    'url.api.gateway': 'http://apigw:8000/auth',
+    'url.internal': 'http://apigw:8000/auth',
     'url.external': 'http://localhost:8000/auth',
     'healthcheck.ms': 30000,
     'public.client.id': 'gui',

@@ -1,5 +1,5 @@
 const mockConfig = {
-  app: { 'internal.base.url': 'abc' },
+  app: { 'base.url': 'abc' },
 };
 const mockSdk = {
   ConfigManager: {

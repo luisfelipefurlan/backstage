@@ -5,10 +5,11 @@ const {
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { replaceTLSFlattenConfigs } = require('../../Utils');
 
+const logger = new Logger('backstage:express/interceptors/Proxy');
+
 const { proxy: configProxy } = getConfig('BS');
 
 const configProxyReplaced = replaceTLSFlattenConfigs(configProxy);
-
 /**
  *  Generates configuration file for http-proxy-middleware
  * @param {string} mountPoint
@@ -18,7 +19,7 @@ const proxyConfiguration = (mountPoint) => {
   let configFinalReplaced = {
     target: configProxy.target,
     logLevel: configProxy['log.level'],
-    logProvider: () => new Logger('backstage:express/interceptors/Proxy'),
+    logProvider: () => new Logger('backstage:express/interceptors/Proxy:internal'),
     changeOrigin: true,
     pathRewrite: (path) => path.replace(`${mountPoint}/proxy`, ''),
     onProxyReq: (proxyReq, req) => {
@@ -33,6 +34,8 @@ const proxyConfiguration = (mountPoint) => {
       ssl: configProxyReplaced.ssl,
     };
   }
+
+  logger.debug('...Final config=', configProxyReplaced);
 
   return configFinalReplaced;
 };

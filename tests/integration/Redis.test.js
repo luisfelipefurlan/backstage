@@ -2,7 +2,6 @@
 const mockConfig = {
   app: {
     'base.url': 'http://localhost:8000',
-    'internal.base.url': 'http://apigw:8000',
   },
   redis: {
     'client.host': 'backstage-redis',

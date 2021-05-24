@@ -1,8 +1,10 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 const mockRandomString = {
   generate: jest.fn(() => ('randomString')),
 };
 jest.mock('randomstring', () => mockRandomString);
 
+const fs = require('fs');
 const path = require('path');
 const {
   replaceTLSFlattenConfigs,
@@ -32,7 +34,7 @@ describe('Utils', () => {
       'tls.ca': path.join(__dirname, 'certs/ca.pem'),
       'tls.cert': path.join(__dirname, 'certs/cert.pem'),
       'tls.key': path.join(__dirname, 'certs/key.pem'),
-      'tls.request.cert': true,
+      'tls.request.cert': 'true',
       'tls.reject.unauthorized': true,
     });
 
@@ -41,9 +43,9 @@ describe('Utils', () => {
       port: 5432,
       'name.tls': 'b',
       tls: {
-        ca: 'CA',
-        cert: 'CERT',
-        key: 'KEY',
+        ca: fs.readFileSync(path.join(__dirname, 'certs/ca.pem')),
+        cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
+        key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
         requestCert: true,
         rejectUnauthorized: true,
       },
@@ -70,8 +72,8 @@ describe('Utils', () => {
       'ssl.ca': path.join(__dirname, 'certs/ca.pem'),
       'ssl.cert': path.join(__dirname, 'certs/cert.pem'),
       'ssl.key': path.join(__dirname, 'certs/key.pem'),
-      'ssl.request.cert': true,
-      'ssl.reject.unauthorized': true,
+      'ssl.request.cert': false,
+      'ssl.reject.unauthorized': 'false',
     });
 
     expect(x).toStrictEqual({
@@ -79,11 +81,11 @@ describe('Utils', () => {
       port: 5432,
       'name.name': 'b',
       ssl: {
-        ca: 'CA',
-        cert: 'CERT',
-        key: 'KEY',
-        requestCert: true,
-        rejectUnauthorized: true,
+        ca: fs.readFileSync(path.join(__dirname, 'certs/ca.pem')),
+        cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
+        key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
+        requestCert: false,
+        rejectUnauthorized: false,
       },
     });
   });

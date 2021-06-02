@@ -150,7 +150,11 @@ const Resolvers = {
         filter: {
           dateFrom = '', dateTo = '', lastN = '1', devices = [], templates = [],
         },
-        configs: { sourceType = SOURCE.DEVICE, operationType = OPERATION.LAST.N, widgetType = WIDGET_TYPE.DEFAULT },
+        configs: {
+          sourceType = SOURCE.DEVICE,
+          operationType = OPERATION.LAST.N,
+          widgetType = WIDGET_TYPE.DEFAULT,
+        },
       } = props;
       let sortedHistory = [];
       let queryStringParams = '';
@@ -221,7 +225,13 @@ const Resolvers = {
       const {
         history,
         historyObj,
-      } = formatOutPut(dynamicAttrs, staticAttrs, dojotDevices, deviceDictionary, sourceType, widgetType);
+      } = formatOutPut(
+        dynamicAttrs,
+        staticAttrs, dojotDevices,
+        deviceDictionary,
+        sourceType,
+        widgetType,
+      );
 
       if (widgetType === WIDGET_TYPE.MAP) {
         return JSON.stringify(historyObj);

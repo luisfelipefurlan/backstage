@@ -30,5 +30,5 @@ node_modules/
 # Ignore generate configs
 config/*.json
 
-#local history
-.history 
+#local development
+build.sh

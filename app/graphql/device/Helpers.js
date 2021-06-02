@@ -7,7 +7,7 @@ const axios = require('axios');
 const moment = require('moment');
 const UTIL = require('../utils/AxiosUtils');
 
-const operations = Object.freeze({
+const OPERATION = Object.freeze({
   LAST: {
     MOUTHS: 4,
     DAYS: 3,
@@ -15,9 +15,16 @@ const operations = Object.freeze({
     MINUTES: 1,
     N: 0,
   },
-  MAP: 8,
+  DATE_RANGE: 5,
 });
-const sources = Object.freeze({
+
+const WIDGET_TYPE = Object.freeze({
+  DEFAULT: 0,
+  MAP: 8,
+  TABLE: 7,
+});
+
+const SOURCE = Object.freeze({
   DEVICE: 0,
   TEMPLATE: 1,
 });
@@ -78,35 +85,53 @@ const generateTemplateKey = (deviceDictionary, device, attr) => {
   return undefined;
 };
 
+const parseValue = (value) => {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(value)) {
+    return value;
+  }
+  return parseFloat(value);
+};
+
 const formatOutPut = (
   dynamicAttributes,
   staticAttributes,
   dojotDevices,
   deviceDictionary,
-  operationType,
+  sourceType,
+  widgetType,
 ) => {
   const history = [];
   const historyObj = {};
   dynamicAttributes.forEach(({
     attr, device_id, value, ts,
   }) => {
-    if (operationType === operations.MAP) {
+    if (widgetType === WIDGET_TYPE.MAP) {
       historyObj[`${device_id}${attr}`] = {
         value: parseGeo(value),
         timestamp: moment(ts).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
         deviceLabel: dojotDevices[device_id] ? dojotDevices[device_id].label : 'undefined',
         templateKey: generateTemplateKey(deviceDictionary, device_id, attr),
       };
+    } else if (sourceType === SOURCE.DEVICE) {
+      history.push({
+        [`${device_id}${attr}`]: parseValue(value),
+        deviceLabel: dojotDevices[device_id] ? dojotDevices[device_id].label : 'undefined',
+        timestamp: moment(ts).utc().format('YYYY-MM-DDTHH:mm:ss[Z]'),
+      });
     } else {
       history.push({
-        // eslint-disable-next-line no-restricted-globals
-        [`${device_id}${attr}`]: isNaN(value) ? value : parseFloat(value),
+        [generateTemplateKey(deviceDictionary, device_id, attr)]: parseValue(value),
+        deviceLabel: dojotDevices[device_id] ? dojotDevices[device_id].label : 'undefined',
         timestamp: moment(ts).utc().format('YYYY-MM-DDTHH:mm:ss[Z]'),
       });
     }
   });
 
-  if (operationType === operations.MAP) {
+  if (widgetType === WIDGET_TYPE.MAP) {
     Object.values(staticAttributes).forEach(({ deviceID, deviceLabel, ...otherProps }) => {
       Object.values(otherProps).forEach(({ static_value, created, label }) => {
         historyObj[`${deviceID}${label}`] = {
@@ -239,6 +264,7 @@ module.exports = {
   getHistory,
   getStaticAttributes,
   getDevicesByTemplate,
-  operations,
-  sources,
+  OPERATION,
+  WIDGET_TYPE,
+  SOURCE,
 };

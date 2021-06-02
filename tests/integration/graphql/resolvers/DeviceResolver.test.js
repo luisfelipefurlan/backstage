@@ -758,7 +758,7 @@ it('Device - Consult the history for the last 3 records (dashboard)', async () =
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
-  expect(result).toEqual('[{"0998temperature":36.5,"timestamp":"2018-03-22T13:46:21Z"},{"0998temperature":15.6,"timestamp":"2018-03-22T13:46:42Z"},{"0998temperature":10.6,"timestamp":"2018-03-22T13:47:07Z","8aa0f9hue":"#4785FF"},{"8aa0f9hue":"#414DE8","timestamp":"2020-05-06T16:25:06Z"},{"8aa0f9hue":"#4785FF","timestamp":"2020-05-06T16:25:13Z"}]');
+  expect(result).toEqual('[{"0998temperature":36.5,"deviceLabel":"temperature sensor","timestamp":"2018-03-22T13:46:21Z"},{"0998temperature":15.6,"deviceLabel":"temperature sensor","timestamp":"2018-03-22T13:46:42Z"},{"0998temperature":10.6,"deviceLabel":"colors sensor","timestamp":"2018-03-22T13:47:07Z","8aa0f9hue":"#4785FF"},{"8aa0f9hue":"#414DE8","deviceLabel":"colors sensor","timestamp":"2020-05-06T16:25:06Z"},{"8aa0f9hue":"#4785FF","deviceLabel":"colors sensor","timestamp":"2020-05-06T16:25:13Z"}]');
 });
 
 it('Device - Consult the history by time period (dashboard)', async () => {
@@ -773,7 +773,8 @@ it('Device - Consult the history by time period (dashboard)', async () => {
 
   const params = {
     filter: {
-      devices: [{ deviceID: '0998', dynamicAttrs: ['temperature'] }, { deviceID: '8aa0f9', dynamicAttrs: ['hue'] }],
+      devices: [{ deviceID: '8aa0f9', dynamicAttrs: ['hue'] }, { deviceID: '0998', dynamicAttrs: ['temperature'] }],
+      templates: [],
       dateFrom: '2020-07-20T15:00:00.000z',
       dateTo: '2020-07-20T17:00:00.000z',
     },
@@ -781,7 +782,7 @@ it('Device - Consult the history by time period (dashboard)', async () => {
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
-  expect(result).toEqual('[{"8aa0f9hue":"#414DE8","timestamp":"2020-07-20T13:25:06Z"},{"0998temperature":36.5,"timestamp":"2020-07-20T15:46:21Z"},{"0998temperature":15.6,"timestamp":"2020-07-20T15:46:42Z"},{"8aa0f9hue":"#4785FF","timestamp":"2020-07-20T16:25:13Z"},{"0998temperature":10.6,"timestamp":"2020-07-20T16:47:07Z","8aa0f9hue":"#4785FF"}]');
+  expect(result).toEqual('[{"8aa0f9hue":"#414DE8","deviceLabel":"colors sensor","timestamp":"2020-07-20T13:25:06Z"},{"0998temperature":36.5,"deviceLabel":"temperature sensor","timestamp":"2020-07-20T15:46:21Z"},{"0998temperature":15.6,"deviceLabel":"temperature sensor","timestamp":"2020-07-20T15:46:42Z"},{"8aa0f9hue":"#4785FF","deviceLabel":"colors sensor","timestamp":"2020-07-20T16:25:13Z"},{"0998temperature":10.6,"deviceLabel":"colors sensor","timestamp":"2020-07-20T16:47:07Z","8aa0f9hue":"#4785FF"}]');
 });
 
 it('Device - should obtain a static coordinate point for the map', async () => {
@@ -795,7 +796,7 @@ it('Device - should obtain a static coordinate point for the map', async () => {
       devices: [{ deviceID: '44h7ff', dynamicAttrs: [], staticAttrs: ['location'] }],
       lastN: 1,
     },
-    configs: { sourceType: 0, operationType: 8 },
+    configs: { sourceType: 0, operationType: 0, widgetType: 8 },
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
@@ -814,7 +815,7 @@ it('Device - should obtain a static and dynamic coordinates points for the map',
       devices: [{ deviceID: '44h7ff', dynamicAttrs: ['coordinate'], staticAttrs: ['location'] }],
       lastN: 1,
     },
-    configs: { sourceType: 0, operationType: 8 },
+    configs: { sourceType: 0, operationType: 0, widgetType: 8 },
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
@@ -851,7 +852,7 @@ it('Template - should get the coordinates from three devices', async () => {
       devices: [],
       lastN: 1,
     },
-    configs: { sourceType: 1, operationType: 8 },
+    configs: { sourceType: 1, operationType: 0, widgetType: 8 },
   };
 
   const result = await Resolvers.Query.getDeviceHistoryForDashboard({}, params, {});
